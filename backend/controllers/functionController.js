@@ -53,7 +53,7 @@ export const findOneFunction = async (req, res) => {
   }
 };
 
-// Modifier un département
+// Modifier une Fonction
 export const updateFunction = async (req, res) => {
   try {
     const { id } = req.params;
@@ -61,37 +61,37 @@ export const updateFunction = async (req, res) => {
 
     const func = await Function.findByIdAndUpdate(id, req.body);
     if (!func) {
-      return res.status(404).json({ message: "Département non trouvé." });
+      return res.status(404).json({ message: "Fonction non trouvée." });
     }
     return res
       .status(200)
-      .json({ message: "Département mis à jour avec succès." });
+      .json({ message: "Fonction mise à jour avec succès." });
   } catch (error) {
-    console.error("Erreur lors de la mise à jour du département :", error);
+    console.error("Erreur lors de la mise à jour de la Fonction :", error);
     return res.status(500).json({ message: error.message });
   }
 };
 
-// Supprimer un département
+// Supprimer un Fonction
 export const deleteFunction = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Vérification si le département existe
+    // Vérification si le Fonction existe
     const func = await Function.findByIdAndDelete(id);
     if (!func) {
-      return res.status(404).json({ message: "Département non trouvé." });
+      return res.status(404).json({ message: "Fonction non trouvée." });
     }
     return res
       .status(200)
-      .json({ message: "Département supprimé avec succès." });
+      .json({ message: "Fonction supprimée avec succès." });
   } catch (error) {
-    console.error("Erreur lors de la suppression du département :", error);
+    console.error("Erreur lors de la suppression de le Fonction :", error);
     return res
       .status(500)
       .json({
         message:
-          "Une erreur est survenue lors de la suppression du département.",
+          "Une erreur est survenue lors de la suppression de le Fonction.",
       });
   }
 };
