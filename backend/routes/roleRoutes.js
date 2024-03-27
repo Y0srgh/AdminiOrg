@@ -1,12 +1,18 @@
 import express from "express";
-import { addRole, findAllRoles } from "../controllers/roleController.js";
+import {
+  addRole,
+  deleteRole,
+  findAllRoles,
+  findOneRole,
+  updateRole,
+} from "../controllers/roleController.js";
 
 const router = express.Router();
 
-// Route pour ajouter un rôle
 router.post("/", addRole);
-
-// Route pour récupérer tous les rôles
 router.get("/", findAllRoles);
+router.get("/:id", findOneRole);
+router.put("/:id", updateRole);
+router.delete("/:id", deleteRole);
 
 export default router;

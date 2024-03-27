@@ -29,3 +29,57 @@ export const findAllRoles = async (req, res) => {
         return res.status(500).json({ message: 'Une erreur est survenue lors de la récupération des rôles.' });
     }
 }
+
+
+export const findOneRole = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const role = await Role.findById(id);
+      return res.status(200).json(role);
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).send({ message: error.message });
+    }
+  };
+  
+  // Modifier un Role
+  export const updateRole = async (req, res) => {
+    try {
+      const { id } = req.params;
+      //const { nom } = req.body;
+  
+      const role = await Role.findByIdAndUpdate(id, req.body);
+      if (!role) {
+        return res.status(404).json({ message: "Role non trouvé." });
+      }
+      return res
+        .status(200)
+        .json({ message: "Role mis à jour avec succès." });
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour du Role :", error);
+      return res.status(500).json({ message: error.message });
+    }
+  };
+  
+  export const deleteRole = async (req, res) => {
+    try {
+      const { id } = req.params;
+  
+      const role = await Role.findByIdAndDelete(id);
+      if (!role) {
+        return res.status(404).json({ message: "Role non trouvé." });
+      }
+      return res
+        .status(200)
+        .json({ message: "Role supprimé avec succès." });
+    } catch (error) {
+      console.error("Erreur lors de la suppression du Role :", error);
+      return res
+        .status(500)
+        .json({
+          message:
+            "Une erreur est survenue lors de la suppression du Role.",
+        });
+    }
+  };
+  
