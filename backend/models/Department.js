@@ -1,14 +1,14 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const departmentSchema = new mongoose.Schema({
+const departmentSchema = mongoose.Schema({
   nom: {
     type: String,
     required: true,
-    unique: true
+  },
+  chefDepartement: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Employee' // Référence à l'employé
   }
-},
-{
-  timestamps: true,
 });
 
 export const Department = mongoose.model('Department', departmentSchema);
