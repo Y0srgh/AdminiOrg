@@ -62,7 +62,8 @@ export const leaveRequest = async (req, res) => {
     console.log("type", soldeConge);
     console.log("dif : ", soldeConge - diffDays);
     const condition1 = soldeConge > diffDays
-    if (soldeConge > diffDays) {
+
+    if (condition1) {
       return res.status(200).send("solde valide");
     } else {
       return res
