@@ -6,6 +6,7 @@ import employeeRoutes  from './routes/employeeRoutes.js'
 import departmentRoutes  from './routes/departmentRoutes.js'
 import functionRoutes  from './routes/functionRoutes.js'
 import roleRoutes  from './routes/roleRoutes.js'
+import leaveRoutes  from './routes/leaveRoutes.js'
 
 
 
@@ -26,6 +27,7 @@ app.use('/employee', employeeRoutes)
 app.use('/department', departmentRoutes)
 app.use('/function', functionRoutes)
 app.use('/role', roleRoutes)
+app.use('/leave', leaveRoutes)
 
 
 mongoose

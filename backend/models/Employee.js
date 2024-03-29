@@ -32,9 +32,13 @@ const employeeSchema = mongoose.Schema(
       required: true,
     },
     solde_conge: {
-        type: Number,
-        default: 0
-      }
+      type: Number,
+      default: 0,
+    },
+    dateEmbauche: {
+      type: Date,
+      required: true,
+    },
   },
   {
     timestamps: true,

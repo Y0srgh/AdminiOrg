@@ -135,9 +135,9 @@ export const updatePassword = async (req, res) => {
 export const updateEmployee = async (req, res) => {
     try {
       const { id } = req.params;
-      const { nom, prenom, departement, fonction, role, email, mot_de_passe } = req.body;
+      const { nom, prenom, departement, fonction, role, email, mot_de_passe, dateEmbauche, solde_conge } = req.body;
   
-      if (!nom || !prenom || !departement || !fonction || !role || !email) {
+      if (!nom || !prenom || !departement || !fonction || !role || !email || !dateEmbauche || !solde_conge) {
         return res.status(400).json({
           message: 'Veuillez fournir tous les champs requis : nom, prénom, département, fonction, rôle, email',
         });
@@ -150,6 +150,8 @@ export const updateEmployee = async (req, res) => {
         fonction,
         role,
         email,
+        dateEmbauche,
+        solde_conge
       };
   
       if (mot_de_passe) {
