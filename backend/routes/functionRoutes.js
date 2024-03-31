@@ -9,10 +9,8 @@ import {
 
 const router = express.Router();
 
-// Route pour ajouter une fonction
 router.post("/", addFunction);
 
-// Route pour récupérer toutes les fonctions
 router.get("/", findAllFunctions);
 router.get("/:id", findOneFunction);
 router.put("/:id", updateFunction);

@@ -53,7 +53,6 @@ export const findOneFunction = async (req, res) => {
   }
 };
 
-// Modifier une Fonction
 export const updateFunction = async (req, res) => {
   try {
     const { id } = req.params;
@@ -72,7 +71,6 @@ export const updateFunction = async (req, res) => {
   }
 };
 
-// Supprimer un Fonction
 export const deleteFunction = async (req, res) => {
   try {
     const { id } = req.params;
