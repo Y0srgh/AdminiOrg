@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken"
 
 const employeeSchema = mongoose.Schema(
   {
@@ -26,6 +27,7 @@ const employeeSchema = mongoose.Schema(
     email: {
       type: String,
       required: true,
+      unique: true,
     },
     mot_de_passe: {
       type: String,
@@ -53,5 +55,9 @@ employeeSchema.pre("save", async function (next) {
   }
   next();
 });
+
+employeeSchema.methods.generateAuthToken = function () {
+  const token = jwt.sign({_id:this._id}, process.env.JWTPRIVATEKEY)
+}
 
 export const Employee = mongoose.model("Employee", employeeSchema);
