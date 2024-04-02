@@ -7,7 +7,7 @@ import Joi from "joi";
 
 export const addEmployee = async (req, res) => {
   try {
-    const { nom, prenom, departement, fonction, role, email, mot_de_passe } =
+    const { nom, prenom, departement, fonction, role, email, dateEmbauche ,mot_de_passe } =
       req.body;
 
     if (
@@ -17,6 +17,7 @@ export const addEmployee = async (req, res) => {
       !fonction ||
       !role ||
       !email ||
+      !dateEmbauche||
       !mot_de_passe
     ) {
       return res
@@ -62,6 +63,7 @@ export const addEmployee = async (req, res) => {
       fonction,
       role,
       email,
+      dateEmbauche,
       mot_de_passe,
     });
 
@@ -234,14 +236,11 @@ export const authEmployee = async (req, res) => {
     if (!employee)
       return res.status(401).send({ message: "Invald Email or Password" });
 
-    const validPassword = await bcrypt.compare(
-      req.body.mot_depasse,
-      employee.mot_de_passe
-    );
+    const validPassword = await bcrypt.compare(req.body.mot_de_passe,employee.mot_de_passe);
     if (!validPassword)
       return res.status(401).send({ message: "Invald Email or Password" });
 
-    const token = user.generateAuthToken();
+    const token = employee.generateAuthToken();
     res.status(200).send({ data: token, message: "Logged in successfully" });
   } catch (error) {
     console.log(error);

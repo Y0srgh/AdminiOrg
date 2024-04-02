@@ -59,8 +59,9 @@ employeeSchema.pre("save", async function (next) {
 });
 
 employeeSchema.methods.generateAuthToken = function () {
-  const token = jwt.sign({ _id: this._id }, process.env.JWTPRIVATEKEY, {
+  const token = jwt.sign({ _id: this._id }, process.env.JWTPRIVATEKEYRSA, {
     expiresIn: "7d",
+    algorithm: "RS256" 
   });
   return token;
 };
