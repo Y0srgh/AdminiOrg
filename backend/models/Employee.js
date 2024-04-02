@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
+import Joi from "joi";
+import passwordComplexity from "joi-password-complexity";
 
 const employeeSchema = mongoose.Schema(
   {
@@ -57,7 +59,21 @@ employeeSchema.pre("save", async function (next) {
 });
 
 employeeSchema.methods.generateAuthToken = function () {
-  const token = jwt.sign({_id:this._id}, process.env.JWTPRIVATEKEY)
-}
+  const token = jwt.sign({ _id: this._id }, process.env.JWTPRIVATEKEY, {
+    expiresIn: "7d",
+  });
+  return token;
+};
+
+export const validate = (data) => {
+  const schema = Joi.object({
+    nom: Joi.string().required().label("nom"),
+    prenom: Joi.string().required().label("prenom"),
+    email: Joi.string().email.required().label("email"),
+    mot_de_passe: passwordComplexity().required().label("mot de passe"),
+    dateEmbauche: Joi.date().required().label("Date d'embauche"),
+  });
+  return schema.validate(data);
+};
 
 export const Employee = mongoose.model("Employee", employeeSchema);

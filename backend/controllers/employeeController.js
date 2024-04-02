@@ -3,6 +3,7 @@ import { Department } from "./../models/Department.js";
 import { Function } from "./../models/Function.js";
 import { Role } from "./../models/Role.js";
 import bcrypt from "bcrypt";
+import Joi from "joi";
 
 export const addEmployee = async (req, res) => {
   try {
@@ -133,46 +134,70 @@ export const updatePassword = async (req, res) => {
 };
 
 export const updateEmployee = async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { nom, prenom, departement, fonction, role, email, mot_de_passe, dateEmbauche, solde_conge } = req.body;
-  
-      if (!nom || !prenom || !departement || !fonction || !role || !email || !dateEmbauche || !solde_conge) {
-        return res.status(400).json({
-          message: 'Veuillez fournir tous les champs requis : nom, prénom, département, fonction, rôle, email',
-        });
-      }
-  
-      let updatedFields = {
-        nom,
-        prenom,
-        departement,
-        fonction,
-        role,
-        email,
-        dateEmbauche,
-        solde_conge
-      };
-  
-      if (mot_de_passe) {
-        const hashedPassword = await bcrypt.hash(mot_de_passe, 10);
-        updatedFields.mot_de_passe = hashedPassword;
-      }
-  
-      const updatedEmployee = await Employee.findByIdAndUpdate(id, updatedFields, { new: true });
-  
-      if (!updatedEmployee) {
-        return res.status(404).json({ message: "Employé non trouvé." });
-      }
-  
-      return res.status(200).json({ message: "Employé mis à jour avec succès."});
-    } catch (error) {
-      console.error("Erreur lors de la mise à jour de l'employé :", error);
-      return res.status(500).json({
-        message: "Une erreur est survenue lors de la mise à jour de l'employé.",
+  try {
+    const { id } = req.params;
+    const {
+      nom,
+      prenom,
+      departement,
+      fonction,
+      role,
+      email,
+      mot_de_passe,
+      dateEmbauche,
+      solde_conge,
+    } = req.body;
+
+    if (
+      !nom ||
+      !prenom ||
+      !departement ||
+      !fonction ||
+      !role ||
+      !email ||
+      !dateEmbauche ||
+      !solde_conge
+    ) {
+      return res.status(400).json({
+        message:
+          "Veuillez fournir tous les champs requis : nom, prénom, département, fonction, rôle, email",
       });
     }
-  };
+
+    let updatedFields = {
+      nom,
+      prenom,
+      departement,
+      fonction,
+      role,
+      email,
+      dateEmbauche,
+      solde_conge,
+    };
+
+    if (mot_de_passe) {
+      const hashedPassword = await bcrypt.hash(mot_de_passe, 10);
+      updatedFields.mot_de_passe = hashedPassword;
+    }
+
+    const updatedEmployee = await Employee.findByIdAndUpdate(
+      id,
+      updatedFields,
+      { new: true }
+    );
+
+    if (!updatedEmployee) {
+      return res.status(404).json({ message: "Employé non trouvé." });
+    }
+
+    return res.status(200).json({ message: "Employé mis à jour avec succès." });
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour de l'employé :", error);
+    return res.status(500).json({
+      message: "Une erreur est survenue lors de la mise à jour de l'employé.",
+    });
+  }
+};
 
 export const deleteEmployee = async (req, res) => {
   try {
@@ -196,4 +221,38 @@ export const deleteEmployee = async (req, res) => {
         "Une erreur est survenue lors de la mise à jour du mot de passe.",
     });
   }
+};
+
+export const authEmployee = async (req, res) => {
+  try {
+    const { error } = validate(req.body);
+    if (error) {
+      return res.status(400).send({ message: error.details[0].message });
+    }
+
+    const employee = await Employee.findOne({ email: req.body.email });
+    if (!employee)
+      return res.status(401).send({ message: "Invald Email or Password" });
+
+    const validPassword = await bcrypt.compare(
+      req.body.mot_depasse,
+      employee.mot_de_passe
+    );
+    if (!validPassword)
+      return res.status(401).send({ message: "Invald Email or Password" });
+
+    const token = user.generateAuthToken();
+    res.status(200).send({ data: token, message: "Logged in successfully" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ message: "Internal Server Error" });
+  }
+};
+
+const validate = (data) => {
+  const schema = Joi.object({
+    email: Joi.string().email().required().label("Email"),
+    mot_de_passe: Joi.string().required().label("Mot de passe"),
+  });
+  return schema.validate(data);
 };
