@@ -10,6 +10,9 @@ import HomeRole from "./Pages/AdminTasks/RoleBased/HomeRole";
 import ShowRole from "./Pages/AdminTasks/RoleBased/ShowRole";
 
 import CreateFunction from "./Pages/AdminTasks/FunctionBased/CreateFunction";
+import DeleteFunction from "./Pages/AdminTasks/FunctionBased/DeleteFunction";
+import EditFunction from "./Pages/AdminTasks/FunctionBased/EditFunction";
+
 const App = () => {
   return (
     <SnackbarProvider>
@@ -24,6 +27,8 @@ const App = () => {
             <Route exact path="/role/detail-role/:id" element={<ShowRole />} />
 
             <Route exact path="/function/ajouter-function" element={<CreateFunction />} />
+            <Route exact path="/function/effacer-function/:id" element={<DeleteFunction />} />
+            <Route exact path="/function/modifier-function/:id" element={<EditFunction />} />
 
           </Routes>
         </BrowserRouter>
