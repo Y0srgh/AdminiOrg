@@ -7,6 +7,8 @@ import { MdOutlineDelete } from 'react-icons/md';
 import ModelSingleCard from './ModelSingleCard';
 
 const ModalCard = ({ model, route }) => {
+  console.log("model : ",model);
+  console.log("route : ",route);
   return (
     <div className='grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
       {model.map((item) => (

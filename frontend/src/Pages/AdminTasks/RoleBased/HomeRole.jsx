@@ -8,14 +8,16 @@ import { MdOutlineAddBox, MdOutlineDelete } from 'react-icons/md';
 import ModalCard from '../../../components/home/ModelCard';
 
 const HomeRole = () => {
-    const [roles, setRoles] = useState(false);
+    const [roles, setRoles] = useState([]);
+    const [loading, setLoading] = useState(false);
+
     useEffect(() => {
         setLoading(true);
         axios
-          .get('http://localhost:5000/roles')
+          .get('http://localhost:5000/role')
           .then((response) => {
-            console.log(response);
-            setBooks(response.data.data);
+            console.log("reponse : ",response.data);
+            setRoles(response.data);
             setLoading(false);
           })
           .catch((error) => {
@@ -29,7 +31,7 @@ const HomeRole = () => {
     <div className='p-4'>
       <div className='flex justify-between items-center'>
         <h1 className='text-3xl my-8'>Liste des rôle</h1>
-        <Link to='/roles/create'>
+        <Link to='/role/ajouter-role'>
           <MdOutlineAddBox className='text-sky-800 text-4xl' />
         </Link>
       </div>

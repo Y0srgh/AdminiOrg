@@ -26,3 +26,8 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }*/
+
+button[type="submit"]:disabled {
+  background-color: #bcbcbc;;
+  cursor: not-allowed;
+}

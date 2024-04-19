@@ -39,7 +39,7 @@ const CreateRole = () => {
 
     const validateRoleName = (role) => {
         // Regular expression for alphabetical role validation
-        const roleRegex = /^[a-zA-Z]+$/;
+        const roleRegex = /^[a-zA-ZÀ-ÿ\s]+$/;
         return roleRegex.test(role);
     };
 

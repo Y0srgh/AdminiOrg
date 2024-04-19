@@ -1,4 +1,0 @@
-button[type="submit"]:disabled {
-    background-color: #bcbcbc;;
-    cursor: not-allowed;
-}
