@@ -1,3 +1,4 @@
+import { Timestamp } from "mongodb";
 import mongoose from "mongoose";
 
 const departmentSchema = mongoose.Schema({
@@ -9,6 +10,9 @@ const departmentSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId || undefined,
     ref: 'Employee' // Référence à l'employé
   }
+},
+{
+  Timestamp: true
 });
 
 export const Department = mongoose.model('Department', departmentSchema);

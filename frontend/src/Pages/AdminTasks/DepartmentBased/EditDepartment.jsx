@@ -5,7 +5,7 @@ import BackButton from "../../../components/BackButton"
 import Spinner from "../../../components/Spinner";
 import axios from "axios";
 
-const EditFunction = () => {
+const EditDepartment = () => {
     const [department, setDepartment] = useState('');
     const [employees, setEmployees] = useState([]);
     const [chefDepartement, setChefDepartement] = useState(''); // Initialize as an empty string
@@ -42,7 +42,7 @@ const EditFunction = () => {
             });
     }, []);
 
-    const handleEditFunction = (e) => {
+    const handleEditDepartment = (e) => {
         e.preventDefault();
         const data = {
             nom: department,
@@ -86,7 +86,7 @@ const EditFunction = () => {
             <BackButton />
             <h1 className='text-3xl my-4'>Modification de département</h1>
             {loading ? <Spinner /> : ''}
-            <form onSubmit={handleEditFunction}>
+            <form onSubmit={handleEditDepartment}>
                 <div className='flex flex-col border-2 border-sky-400 rounded-xl w-[600px] p-4 mx-auto'>
                     <div className='my-4'>
                         <label className='text-xl mr-4 text-gray-500'>Label de département</label>
@@ -121,4 +121,4 @@ const EditFunction = () => {
     )
 }
 
-export default EditFunction;
+export default EditDepartment;

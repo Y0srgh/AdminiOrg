@@ -7,17 +7,17 @@ import { BsInfoCircle } from 'react-icons/bs';
 import { MdOutlineAddBox, MdOutlineDelete } from 'react-icons/md';
 import ModalCard from '../../../components/home/ModelCard';
 
-const HomeFunction = () => {
-    const [functions, setFunctions] = useState([]);
+const HomeDepartment = () => {
+    const [departments, setDepartments] = useState([]);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         setLoading(true);
         axios
-          .get('http://localhost:5000/function')
+          .get('http://localhost:5000/department')
           .then((response) => {
             console.log("reponse : ",response.data);
-            setFunctions(response.data);
+            setDepartments(response.data);
             setLoading(false);
           })
           .catch((error) => {
@@ -30,14 +30,14 @@ const HomeFunction = () => {
   return (
     <div className='p-4'>
       <div className='flex justify-between items-center'>
-        <h1 className='text-3xl my-8'>Liste des fonctions</h1>
+        <h1 className='text-3xl my-8'>Liste des départements</h1>
         <Link to='/role/ajouter-role'>
           <MdOutlineAddBox className='text-sky-800 text-4xl' />
         </Link>
       </div>
-      <ModalCard model={functions} route={"function"} />
+      <ModalCard model={departments} route={"department"} />
     </div>
   )
 }
 
-export default HomeFunction
+export default HomeDepartment
