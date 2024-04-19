@@ -1,6 +1,6 @@
 import express from "express";
-//import { PORT,mongoDBURL } from './config/config.js';
-import dotenv from 'dotenv'
+import { PORT,mongoDBURL } from './config/config.js';
+//import dotenv from 'dotenv'
 import  mongoose  from "mongoose";
 import cors from 'cors';
 import employeeRoutes  from './routes/employeeRoutes.js'
@@ -10,7 +10,7 @@ import roleRoutes  from './routes/roleRoutes.js'
 import leaveRoutes  from './routes/leaveRoutes.js'
 
 
-dotenv.config()
+//dotenv.config()
 const app = express();
 
 //Middleware for parsing reques body
@@ -32,11 +32,11 @@ app.use('/leave', leaveRoutes)
 
 
 mongoose
-    .connect(process.env.mongoDBURL)
+    .connect(mongoDBURL)
     .then(()=>{
         console.log('App connected to database');
-        app.listen(process.env.PORT, ()=>{
-            console.log(`App is listening to port: ${process.env.PORT}`);
+        app.listen(PORT, ()=>{
+            console.log(`App is listening to port: ${PORT}`);
         })
     })
     .catch((error)=>{
