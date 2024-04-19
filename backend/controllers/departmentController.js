@@ -4,43 +4,37 @@ import { Employee } from './../models/Employee.js';
 export const addDepartment = async (req, res) => {
   try {
     const { nom, chefDepartement } = req.body;
+
     // Validation des données
-    if (!nom || !chefDepartement) {
-      return res
-        .status(400)
-        .json({ message: "Veuillez fournir tous les champs." });
+    if (!nom) {
+      return res.status(400).json({ message: "Veuillez fournir le nom du département." });
     }
 
-    //verification de l'existence du depart
-    const existingDepartment = await Department.findOne({ nom });
-    if (existingDepartment) {
-      return res.status(400).json({ message: "Ce département existe déjà." });
-    }
+    let departmentData = { nom };
 
-    // Vérifier si l'employé désigné comme chef de département existe
-    const existingEmployee = await Employee.findById(chefDepartement);
-    if (!existingEmployee) {
-      return res.status(404).json({
-        message: "Employé désigné comme chef de département non trouvé.",
-      });
-    }
-
-    // Mettre à jour la fonction de l'employé désigné comme Chef de département si nécessaire
-    if (existingEmployee.fonction !== "Chef de département") {
+    // Vérification si chefDepartement est fourni et s'il est non vide
+    if (chefDepartement && Object.keys(chefDepartement).length !== 0) {
+      const existingEmployee = await Employee.findById(chefDepartement);
+      if (!existingEmployee) {
+        return res.status(404).json({ message: "Employé désigné comme chef de département non trouvé." });
+      }
+      // Mettre à jour la fonction de l'employé désigné comme Chef de département si nécessaire
       existingEmployee.fonction = "Chef de département";
       await existingEmployee.save();
+
+      // Inclure chefDepartement seulement s'il est valide
+      departmentData.chefDepartement = chefDepartement;
     }
 
     // Création du département
-    const department = await Department.create({ nom, chefDepartement });
+    const department = await Department.create(departmentData);
     return res.status(201).json(department);
   } catch (error) {
     console.error("Erreur lors de l'ajout du département :", error);
-    return res.status(500).json({
-      message: "Une erreur est survenue lors de l'ajout du département.",
-    });
+    return res.status(500).json({ message: "Une erreur est survenue lors de l'ajout du département." });
   }
 };
+
 
 export const findAllDepartments = async (req, res) => {
   try {
@@ -72,10 +66,8 @@ export const updateDepartment = async (req, res) => {
     const { id } = req.params;
     const { nom, chefDepartement } = req.body;
 
-    if (!nom || !chefDepartement) {
-      return res
-        .status(400)
-        .json({ message: "Veuillez fournir tous les champs." });
+    if (!nom) {
+      return res.status(400).json({ message: "Veuillez fournir le nom du département." });
     }
 
     // Vérification si le département existe
@@ -84,44 +76,38 @@ export const updateDepartment = async (req, res) => {
       return res.status(404).json({ message: "Département non trouvé." });
     }
 
-    // Vérifier si l'employé désigné comme chef de département existe
-    const existingEmployee = await Employee.findById(chefDepartement);
-    if (!existingEmployee) {
-      return res.status(404).json({
-        message: "Employé désigné comme chef de département non trouvé.",
-      });
-    }
-
-    // Vérifier s'il existe un autre employé dans le même département avec la fonction de "chef de département"
-    const existingChief = await Employee.findOne({
-      departement: existingEmployee.departement,
-      fonction: "Chef de département",
-    });
-    if (existingChief) {
-      // Mettre à jour la fonction de l'ancien chef de département
-      existingChief.fonction = existingEmployee.fonction; // Remplacez "autre fonction" par la fonction que vous souhaitez attribuer à l'ancien chef
-      await existingChief.save();
-    }
-
-    // Mettre à jour la fonction de l'employé désigné comme chef de département si nécessaire
-    if (existingEmployee.fonction !== "chef de département") {
-      existingEmployee.fonction = "chef de département";
-      await existingEmployee.save();
-    }
-
     // Mettre à jour les informations du département
     department.nom = nom;
-    department.chefDepartement = chefDepartement;
+
+    // Si chefDepartement est fourni, vérifier s'il existe
+    if (chefDepartement) {
+      const existingEmployee = await Employee.findById(chefDepartement);
+      if (!existingEmployee) {
+        return res.status(404).json({
+          message: "Employé désigné comme chef de département non trouvé.",
+        });
+      }
+      // Mettre à jour la fonction de l'employé désigné comme chef de département si nécessaire
+      if (existingEmployee.fonction !== "chef de département") {
+        existingEmployee.fonction = "chef de département";
+        await existingEmployee.save();
+      }
+      // Mettre à jour le chef du département
+      department.chefDepartement = chefDepartement;
+    } else {
+      // Si chefDepartement n'est pas fourni, supprimer le chef actuel du département
+      department.chefDepartement = undefined;
+    }
+
     await department.save();
 
-    return res
-      .status(200)
-      .json({ message: "Département mis à jour avec succès." });
+    return res.status(200).json({ message: "Département mis à jour avec succès." });
   } catch (error) {
     console.error("Erreur lors de la mise à jour du département :", error);
     return res.status(500).json({ message: error.message });
   }
 };
+
 
 // Supprimer un département
 export const deleteDepartment = async (req, res) => {

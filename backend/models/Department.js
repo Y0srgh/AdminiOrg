@@ -6,7 +6,7 @@ const departmentSchema = mongoose.Schema({
     required: true,
   },
   chefDepartement: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId || undefined,
     ref: 'Employee' // Référence à l'employé
   }
 });
