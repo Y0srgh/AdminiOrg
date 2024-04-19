@@ -1,41 +1,52 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { SnackbarProvider, useSnackbar } from "notistack";
 import BackButton from "../../BackButton";
 import Spinner from "../../Spinner";
 import axios from "axios";
 import './Role.css'
 
-const CreateRole = () => {
-    const [roleName, setRoleName] = useState("");
+const EditRole = () => {
+    const [roleName, setRoleName] = useState('');
     const [loading, setLoading] = useState(false);
-    const { enqueueSnackbar } = useSnackbar();
     const navigate = useNavigate();
+    const { id } = useParams();
+    const { enqueueSnackbar } = useSnackbar();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    useEffect(() => {
+        setLoading(true);
+        axios
+            .get(`http://localhost:5000/role/${id}`)
+            .then((response) => {
+                console.log(response);
+                setRoleName(response.data.nom)
+                setLoading(false);
+            }).catch((error) => {
+                setLoading(false);
+                alert('An error happened. Please Chack console');
+                console.log(error);
+            });
+    }, []);
 
+    const handleEditRole = () => {
         const data = {
             nom: roleName,
-        }
+        };
         setLoading(true);
-        await axios
-            .post("http://localhost:5000/role", data)
+        axios
+            .put(`http://localhost:5000/role/${id}`, data)
             .then(() => {
                 setLoading(false);
-
-                enqueueSnackbar("Un nouveau role a ete ajoute avec succes", {
-                    variant: "success",
-                });
-                //navigate("/");
-                setRoleName("");
+                enqueueSnackbar('Le nom de ce rôle a été modifié avec succès', { variant: 'success' });
+                //navigate('/');
             })
             .catch((error) => {
                 setLoading(false);
-                enqueueSnackbar(error.response.data.message, { variant: "error" });
+                // alert('An error happened. Please Chack console');
+                enqueueSnackbar('Error', { variant: 'error' });
                 console.log(error);
             });
-    }
+    };
 
     const validateRoleName = (role) => {
         // Regular expression for alphabetical role validation
@@ -54,9 +65,9 @@ const CreateRole = () => {
     return (
         <div className='p-4'>
             <BackButton />
-            <h1 className='text-3xl my-4'>Ajoutez un nouveau rôle</h1>
+            <h1 className='text-3xl my-4'>Modification du rôle</h1>
             {loading ? <Spinner /> : ''}
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleEditRole}>
                 <div className='flex flex-col border-2 border-sky-400 rounded-xl w-[600px] p-4 mx-auto'>
                     <div className='my-4'>
                         <label className='text-xl mr-4 text-gray-500'>Label du rôle</label>
@@ -78,4 +89,5 @@ const CreateRole = () => {
     )
 }
 
-export default CreateRole
+export default EditRole
+
