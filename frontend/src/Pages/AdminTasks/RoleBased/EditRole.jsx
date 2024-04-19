@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { SnackbarProvider, useSnackbar } from "notistack";
-import BackButton from "../../BackButton";
-import Spinner from "../../Spinner";
+import BackButton from "../../../components/BackButton"
+import Spinner from "../../../components/Spinner";
 import axios from "axios";
 import './Role.css'
 
@@ -37,13 +37,14 @@ const EditRole = () => {
             .put(`http://localhost:5000/role/${id}`, data)
             .then(() => {
                 setLoading(false);
-                enqueueSnackbar('Le nom de ce rôle a été modifié avec succès', { variant: 'success' });
-                //navigate('/');
+                enqueueSnackbar("Le role a été modifié avec succes", {
+                    variant: "success",
+                });
             })
             .catch((error) => {
                 setLoading(false);
                 // alert('An error happened. Please Chack console');
-                enqueueSnackbar('Error', { variant: 'error' });
+                enqueueSnackbar(error.response.data.message, { variant: "error" });
                 console.log(error);
             });
     };
@@ -66,7 +67,7 @@ const EditRole = () => {
         <div className='p-4'>
             <BackButton />
             <h1 className='text-3xl my-4'>Modification du rôle</h1>
-            {loading ? <Spinner /> : ''}
+            {/*loading ? <Spinner /> : ''*/}
             <form onSubmit={handleEditRole}>
                 <div className='flex flex-col border-2 border-sky-400 rounded-xl w-[600px] p-4 mx-auto'>
                     <div className='my-4'>

@@ -1,20 +1,25 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-
-import LoginFrom from "./components/LoginForm/LoginFrom";
-import CreateRole from "./components/AdminTasks/RoleBased/CreateRole";
-import "./App.css";
+import { SnackbarProvider, useSnackbar } from "notistack";
+import LoginFrom from "./Pages/LoginForm/LoginFrom";
+import CreateRole from "./Pages/AdminTasks/RoleBased/CreateRole";
+import EditRole from "./Pages/AdminTasks/RoleBased/EditRole";
+import DeleteRole from "./Pages/AdminTasks/RoleBased/DeleteRole";
 
 const App = () => {
   return (
-    <div>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<LoginFrom />} />
-          <Route path="/role/ajouter-role" element={<CreateRole />} />
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <SnackbarProvider>
+      <div>
+        <BrowserRouter>
+          <Routes>
+            <Route exact path="/login" element={<LoginFrom />} />
+            <Route exact path="/role/ajouter-role" element={<CreateRole />} />
+            <Route exact path="/role/modifier-role/:id" element={<EditRole />} />
+            <Route exact path="/role/effacer-role/:id" element={<DeleteRole />} />
+          </Routes>
+        </BrowserRouter>
+      </div>
+    </SnackbarProvider>
   );
 };
 
