@@ -22,6 +22,11 @@ import EditDepartment from "./Pages/AdminTasks/DepartmentBased/EditDepartment";
 import ShowDepartment from "./Pages/AdminTasks/DepartmentBased/ShowDepartment";
 import HomeDepartment from "./Pages/AdminTasks/DepartmentBased/HomeDepartment";
 
+import CreateEmployee from "./Pages/AdminTasks/EmployeeBased/CreateEmployee";
+import DeleteEmployee from "./Pages/AdminTasks/EmployeeBased/DeleteEmployee";
+import HomeEmployee from "./Pages/AdminTasks/EmployeeBased/HomeEmployee";
+import ShowEmployee from "./Pages/AdminTasks/EmployeeBased/ShowEmployee";
+
 const App = () => {
   return (
     <SnackbarProvider>
@@ -47,6 +52,10 @@ const App = () => {
             <Route exact path="/department/modifier-department/:id" element={<EditDepartment />} />
             <Route exact path="/department/detail-department/:id" element={<ShowDepartment />} />
 
+            <Route exact path="/employee/" element={<HomeEmployee />} />
+            <Route exact path="/employee/ajouter-employee" element={<CreateEmployee />} />
+            <Route exact path="/employee/effacer-employee/:id" element={<DeleteEmployee />} />
+            <Route exact path="/employee/detail-employee/:id" element={<ShowEmployee />} />
           </Routes>
         </BrowserRouter>
       </div>

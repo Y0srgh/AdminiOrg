@@ -9,7 +9,7 @@ export const addEmployee = async (req, res) => {
   try {
     const { nom, prenom, departement, fonction, role, email, dateEmbauche ,mot_de_passe } =
       req.body;
-
+    console.log(req.body);
     if (
       !nom ||
       !prenom ||
@@ -26,7 +26,7 @@ export const addEmployee = async (req, res) => {
     }
 
     // Vérifier si le département existe
-    const existingDepartment = await Department.findOne({ nom: departement });
+    const existingDepartment = await Department.findById(departement);
     if (!existingDepartment) {
       return res
         .status(400)
@@ -34,7 +34,7 @@ export const addEmployee = async (req, res) => {
     }
 
     // Vérifier si la fonction existe
-    const existingFunction = await Function.findOne({ nom: fonction });
+    const existingFunction = await Function.findById(fonction);
     if (!existingFunction) {
       return res
         .status(400)
@@ -42,7 +42,7 @@ export const addEmployee = async (req, res) => {
     }
 
     // Vérifier si le rôle existe
-    const existingRole = await Role.findOne({ nom: role });
+    const existingRole = await Role.findById(role);
     if (!existingRole) {
       return res
         .status(400)
