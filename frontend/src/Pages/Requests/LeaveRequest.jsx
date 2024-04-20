@@ -8,9 +8,8 @@ const LeaveRequest = () => {
     typeConge: '',
     date_debut: '',
     date_fin: '',
-    dateReprise: '',
+    date_reprise: '',
     remplaçant: '', // Corrected key name
-    date: '',
   });
 
   const [employees, setEmployees] = useState([]);
@@ -30,6 +29,7 @@ const LeaveRequest = () => {
 
   const handleChange = e => {
     const { name, value } = e.target;
+    console.log(name, value);
     setFormData({
       ...formData,
       [name]: value
@@ -77,7 +77,7 @@ const LeaveRequest = () => {
                   onChange={handleChange}
                   className="mr-2"
                 />
-                Paid Leave
+                Congé payé
               </label>
               <label className="inline-flex items-center">
                 <input 
@@ -88,7 +88,7 @@ const LeaveRequest = () => {
                   onChange={handleChange}
                   className="mr-2"
                 />
-                Unpaid Leave
+                Congé sans solde
               </label>
             </div>
           </div>
@@ -123,8 +123,8 @@ const LeaveRequest = () => {
             </label>
             <input 
               type="date"
-              name="dateReprise"
-              value={formData.dateReprise}
+              name="date_reprise"
+              value={formData.date_reprise}
               onChange={handleChange}
               min={getMinDate()} // Set min date
               className="p-2 border rounded"
@@ -147,18 +147,6 @@ const LeaveRequest = () => {
                 </option>
               ))}
             </select>
-          </div>
-          <div className="mb-4">
-            <label className="block mb-2">
-              Date: Tunis, Tunisia
-            </label>
-            <input 
-              type="date"
-              name="date"
-              value={formData.date}
-              onChange={handleChange}
-              className="p-2 border rounded"
-            />
           </div>
           <button 
             type="submit" 
