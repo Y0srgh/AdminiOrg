@@ -25,6 +25,13 @@ const requestSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  typeConge: {
+    type: String,
+    enum: ["payé", "sans_solde"],
+    required: function () {
+      return this.type === "Congé";
+    },
+  },
   date_debut: {
     type: Date,
     required: function () {
@@ -33,6 +40,19 @@ const requestSchema = new mongoose.Schema({
   },
   date_fin: {
     type: Date,
+    required: function () {
+      return this.type === "Congé";
+    },
+  },
+  date_reprise: {
+    type: Date,
+    required: function () {
+      return this.type === "Congé";
+    },
+  },
+  remplaçant: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Employee",
     required: function () {
       return this.type === "Congé";
     },

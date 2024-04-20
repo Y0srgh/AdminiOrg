@@ -158,7 +158,7 @@ function isDateInRange(date, startDate, endDate) {
 async function isAnotherEmployeePresent(departmentId, datedebut, datefin) {
   const request = await Request.find({});
   if (!request || request.length === 0) {
-    throw new Error("Employee not found");
+    throw new Error("Employee not found employee present");
   }
 
   const requestDepartX = request.filter(
@@ -255,7 +255,7 @@ async function isAnotherEmployeePresent(id, dateDebut, dateFin) {
 async function getSoldeConge(employeeId) {
   const employee = await Employee.findById(employeeId);
   if (!employee) {
-    throw new Error("Employee not found");
+    throw new Error("Employee not found solde");
   }
   const dateEmbauche = employee.dateEmbauche;
   const moisTravailles = moment().diff(dateEmbauche, "months");
@@ -283,19 +283,19 @@ export const leaveRequest = async (req, res) => {
     console.log("dif : ", soldeConge - diffDays);
     const condition1 = soldeConge > diffDays;
     console.log("dep", department);
-    const condition2 = await isAnotherEmployeePresent(
+    /*const condition2 = await isAnotherEmployeePresent(
       department,
       date_debut,
       date_fin
     );
-    console.log(condition2);
+    console.log(condition2);*/
 
-    if (condition2) {
-      return res.status(200).send("There is an other employee");
+    if (condition1) {
+      return res.status(200).send("Votre demande a été enregistrée");
     } else {
       return res
         .status(200)
-        .send({ message: "There is not an other employee" });
+        .send({ message: "Vous ne pouvez pas demander un congé" });
     }
   } catch (error) {
     console.error("Erreur lors de la demande du congé");
