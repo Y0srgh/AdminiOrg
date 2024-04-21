@@ -105,12 +105,18 @@ export const findOneEmployee = async (req, res) => {
 export const updatePassword = async (req, res) => {
   try {
     const { id } = req.params;
-    const { mot_de_passe } = req.body;
+    const { mot_de_passe, ancien_mot_de_passe } = req.body;
 
     // Vérification si l'employé existe
     const employee = await Employee.findById(id);
     if (!employee) {
       return res.status(404).json({ message: "Employé non trouvé." });
+    }
+
+    // Vérification de l'ancien mot de passe
+    const isPasswordCorrect = await bcrypt.compare(ancien_mot_de_passe, employee.mot_de_passe);
+    if (!isPasswordCorrect) {
+      return res.status(400).json({ message: "Ancien mot de passe incorrect." });
     }
 
     // Hachage du nouveau mot de passe
@@ -134,6 +140,7 @@ export const updatePassword = async (req, res) => {
     });
   }
 };
+
 
 export const updateEmployee = async (req, res) => {
   try {
