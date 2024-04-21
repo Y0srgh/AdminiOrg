@@ -9,7 +9,7 @@ import functionRoutes  from './routes/functionRoutes.js'
 import roleRoutes  from './routes/roleRoutes.js'
 import leaveRoutes  from './routes/leaveRoutes.js'
 import avanceRoutes from "./routes/avanceRoutes.js";
-import refundRoutes from "./routes/refundRoutes.js"
+import refundRoutes from "./controllers/refundController.js"
 //dotenv.config()
 const app = express();
 

@@ -75,7 +75,9 @@ const requestSchema = new mongoose.Schema({
       return this.type === "Avance";
     },
   },
-  documents: [String],
+  documents: {
+    type: String
+  },
   validationRH: {
     type: Boolean,
     default: false,

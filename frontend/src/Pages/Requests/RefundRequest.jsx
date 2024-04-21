@@ -3,11 +3,13 @@ import { SnackbarProvider, useSnackbar } from "notistack";
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 
+
 const RefundRequest = () => {
 
     const [formData, setFormData] = useState({
         nom: '',
         prenom: '',
+        file: null,
     });
     const { id, department, fonction } = useParams();
     const { enqueueSnackbar } = useSnackbar();
@@ -21,11 +23,46 @@ const RefundRequest = () => {
         });
     };
 
-    const handleSubmit = async (e) => {
+    const handleFileChange = e => {
+        setFormData({
+            ...formData,
+            file: e.target.files[0], // Update file state with the selected file
+        });
+    };
+
+    /*const handleSubmit = async (e) => {
         e.preventDefault();
+        
+
+        console.log(formData, "employee",id, "depart",department,"fonction", fonction, "file",formData.file);
 
         try {
-            await axios.post("http://localhost:5000/avance", { ...formData, employee: id, department, type: "Remboursement", fonction });
+            await axios.post("http://localhost:5000/refund", { nom:formData.nom,prenom:formData.prenom,file:formData.file.name, employee: id, department, type: "Remboursement", fonction});
+            enqueueSnackbar("Votre demande a été enregistrée", {
+                variant: "success",
+            });
+        } catch (error) {
+            enqueueSnackbar(error.response.data.message, { variant: "error" });
+            console.error(error);
+        }
+    };*/
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        
+        const formDataToSend = new FormData();
+        formDataToSend.append("nom", formData.nom);
+        formDataToSend.append("prenom", formData.prenom);
+        formDataToSend.append("employee", id);
+        formDataToSend.append("department", department);
+        formDataToSend.append("fonction", fonction);
+        formDataToSend.append("type", "Remboursement");
+        formDataToSend.append("file", formData.file); // Append file to FormData
+        
+        console.log(formData, "employee",id, "depart",department,"fonction", fonction, "file",formData.file);
+    
+        try {
+            await axios.post("http://localhost:5000/refund", formDataToSend);
             enqueueSnackbar("Votre demande a été enregistrée", {
                 variant: "success",
             });
@@ -34,6 +71,7 @@ const RefundRequest = () => {
             console.error(error);
         }
     };
+    
 
     return (
         <div className="min-h-screen bg-white flex flex-col justify-center items-center">
@@ -68,7 +106,16 @@ const RefundRequest = () => {
                         />
                     </div>
 
-                    
+                    <div className="mb-4">
+                        <label className="block mb-2">
+                            Upload File:
+                        </label>
+                        <input
+                            type="file"
+                            onChange={handleFileChange}
+                            className="p-2 border rounded"
+                        />
+                    </div>
 
                     <button
                         type="submit"

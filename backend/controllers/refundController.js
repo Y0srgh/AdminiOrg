@@ -1,25 +1,47 @@
 import { Employee } from "../models/Employee.js";
 import { Request } from "../models/Request.js";
+import express from "express";
+import multer from 'multer';
+const router = express.Router();
 
-export const refundRequest = async (req, res) => {
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) { return cb(null, './public/refund_files') }, // Destination folder
+  filename: function (req, file, cb) {
+    return cb(null, `${Date.now()}_${file.originalname}`); // Use original filename
+  }
+});
+
+const upload = multer({ storage: storage });
+
+router.post('/', upload.single('file'), async (req, res) => {
   try {
-    const { employee, department, fonction, nom, prenom } = req.body;
 
+    const { employee, department, fonction, nom, prenom } = req.body;
+    console.log(req.body);
     // Vérifier que tous les champs sont fournis
-    if (!employee || !department || !fonction || !nom || !prenom ) {
+    if (!employee || !department || !fonction || !nom || !prenom) {
       return res.status(400).json({ message: "Veuillez fournir tous les champs." });
     }
+
+    // Check if file field exists in request
+    if (!req.file) {
+      return res.status(400).json({ message: "File not provided." });
+    }
+
+    console.log(req.file);
+    // Retrieve file name from multer
+    const file = req.file.originalname
+
+    console.log("employee, department, fonction, nom, prenom", employee, department, fonction, nom, prenom, file);
 
     // Vérifier l'existence de l'employé
     const existingEmployee = await Employee.findOne({
       _id: employee,
-      department: department,
-      fonction: fonction,
-      nom: nom,
-      prenom: prenom
     });
 
-    if (!existingEmployee) {
+    console.log(existingEmployee);
+
+    if ((existingEmployee.department && existingEmployee.department.toString() !== department) || existingEmployee.fonction !== fonction || existingEmployee.nom !== nom || existingEmployee.prenom !== prenom) {
       return res.status(400).json({ message: "Employé non trouvé." });
     }
 
@@ -31,11 +53,16 @@ export const refundRequest = async (req, res) => {
       fonction: fonction,
       nom: nom,
       prenom: prenom,
+      documents: file
     });
 
     return res.status(200).json({ message: "Votre demande a été enregistrée." });
+
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: error.message });
   }
-};
+})
+
+export default router;
+
