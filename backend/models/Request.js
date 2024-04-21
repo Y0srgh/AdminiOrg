@@ -16,6 +16,11 @@ const requestSchema = new mongoose.Schema({
     ref: "Department",
     required: true,
   },
+
+  fonction: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Function",
+  },
   status: {
     type: String,
     enum: ["En_attente", "Approuvée", "Refusée", "Annulée"],
@@ -31,6 +36,12 @@ const requestSchema = new mongoose.Schema({
     required: function () {
       return this.type === "Congé";
     },
+  },
+  nom: {
+    type: String,
+  },
+  prenom: {
+    type: String,
   },
   date_debut: {
     type: Date,

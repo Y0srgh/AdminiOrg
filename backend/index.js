@@ -8,7 +8,7 @@ import departmentRoutes  from './routes/departmentRoutes.js'
 import functionRoutes  from './routes/functionRoutes.js'
 import roleRoutes  from './routes/roleRoutes.js'
 import leaveRoutes  from './routes/leaveRoutes.js'
-
+import avanceRoutes from "./routes/avanceRoutes.js";
 
 //dotenv.config()
 const app = express();
@@ -29,6 +29,7 @@ app.use('/department', departmentRoutes)
 app.use('/function', functionRoutes)
 app.use('/role', roleRoutes)
 app.use('/leave', leaveRoutes)
+app.use('/avance', avanceRoutes)
 
 
 mongoose

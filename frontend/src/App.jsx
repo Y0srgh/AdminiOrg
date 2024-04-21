@@ -28,6 +28,7 @@ import HomeEmployee from "./Pages/AdminTasks/EmployeeBased/HomeEmployee";
 import ShowEmployee from "./Pages/AdminTasks/EmployeeBased/ShowEmployee";
 
 import LeaveRequest from "./Pages/Requests/LeaveRequest";
+import AvanceRequest from "./Pages/Requests/AvanceRequest";
 
 const App = () => {
   return (
@@ -60,6 +61,8 @@ const App = () => {
             <Route exact path="/employee/detail-employee/:id" element={<ShowEmployee />} />
 
             <Route exact path="/leave/:department/:id" element={<LeaveRequest />} />
+            
+            <Route exact path="/refund/:department/:id/:function" element={<AvanceRequest />} />
 
           </Routes>
         </BrowserRouter>
