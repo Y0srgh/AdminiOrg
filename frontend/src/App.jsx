@@ -31,6 +31,7 @@ import LeaveRequest from "./Pages/Requests/LeaveRequest";
 import AvanceRequest from "./Pages/Requests/AvanceRequest";
 
 import UpdatePassword from "./Pages/EmployeeTasks/UpdatePassword";
+import RefundRequest from "./Pages/Requests/RefundRequest";
 
 const App = () => {
   return (
@@ -65,7 +66,8 @@ const App = () => {
 
             <Route exact path="/leave/:department/:id" element={<LeaveRequest />} />
             
-            <Route exact path="/refund/:department/:id/:function" element={<AvanceRequest />} />
+            <Route exact path="/avance/:department/:id/:fonction" element={<AvanceRequest />} />
+            <Route exact path="/refund/:department/:id/:fonction" element={<RefundRequest />} />
 
           </Routes>
         </BrowserRouter>
