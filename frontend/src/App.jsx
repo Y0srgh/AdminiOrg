@@ -30,6 +30,8 @@ import ShowEmployee from "./Pages/AdminTasks/EmployeeBased/ShowEmployee";
 import LeaveRequest from "./Pages/Requests/LeaveRequest";
 import AvanceRequest from "./Pages/Requests/AvanceRequest";
 
+import UpdatePassword from "./Pages/EmployeeTasks/UpdatePassword";
+
 const App = () => {
   return (
     <SnackbarProvider>
@@ -56,6 +58,7 @@ const App = () => {
             <Route exact path="/department/detail-department/:id" element={<ShowDepartment />} />
 
             <Route exact path="/employee" element={<HomeEmployee />} />
+            <Route exact path="/employee/modifier-mot-de-passe/:id" element={<UpdatePassword />} />
             <Route exact path="/employee/ajouter-employee" element={<CreateEmployee />} />
             <Route exact path="/employee/effacer-employee/:id" element={<DeleteEmployee />} />
             <Route exact path="/employee/detail-employee/:id" element={<ShowEmployee />} />

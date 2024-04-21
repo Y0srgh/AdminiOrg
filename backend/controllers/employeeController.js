@@ -113,8 +113,12 @@ export const updatePassword = async (req, res) => {
       return res.status(404).json({ message: "Employé non trouvé." });
     }
 
+    const hashedOldPassword = await bcrypt.hash(employee.mot_de_passe, 10);
+
+    console.log("mot_de_passe : ",employee.mot_de_passe, "ancien",ancien_mot_de_passe,"ancien hashed",hashedOldPassword,"nouveau",mot_de_passe);
+
     // Vérification de l'ancien mot de passe
-    const isPasswordCorrect = await bcrypt.compare(ancien_mot_de_passe, employee.mot_de_passe);
+    const isPasswordCorrect = await bcrypt.compare(employee.mot_de_passe, hashedOldPassword);
     if (!isPasswordCorrect) {
       return res.status(400).json({ message: "Ancien mot de passe incorrect." });
     }

@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom';
+import { SnackbarProvider, useSnackbar } from "notistack";
+import axios from 'axios';
 
 const UpdatePassword = () => {
     const [formData, setFormData] = useState({
         ancien_mot_de_passe: '',
         mot_de_passe: '',
     })
-    const { id } = useParams();
-    const { enqueueSnackbar } = useSnackbar();
-
+    
     const handleChange = e => {
         const { name, value } = e.target;
         console.log(name, value);
@@ -16,20 +17,29 @@ const UpdatePassword = () => {
             [name]: value
         });
     };
+    
+    const { id } = useParams();
+    const { enqueueSnackbar } = useSnackbar();
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+    e.preventDefault();
 
-        try {
-            await axios.post(`http://localhost:5000/employee/update-password/${id}`, { ...formData, employee: id });
-            enqueueSnackbar("Votre demande a été enregistrée", {
-                variant: "success",
-            });
-        } catch (error) {
-            enqueueSnackbar(error.response.data.message, { variant: "error" });
-            console.error(error);
-        }
-    };
+    try {
+        await axios.put(`http://localhost:5000/employee/update-password/${id}`, formData);
+        enqueueSnackbar("Le mot de passe a été modifié avec succès", {
+            variant: "success",
+        });
+        navigate();
+    } catch (error) {
+        enqueueSnackbar(error.response.data.message, { variant: "error" });
+        console.error("log error",error);
+        console.log("log error resp",error.response); // Check the entire error response object
+        console.log(error.response.data.message); // Check the data within the error response
+        navigate();
+    }
+};
+
 
     return (
         <div className="min-h-screen bg-white flex flex-col justify-center items-center">
