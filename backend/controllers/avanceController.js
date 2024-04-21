@@ -13,13 +13,11 @@ export const avanceRequest = async (req, res) => {
     // Vérifier l'existence de l'employé
     const existingEmployee = await Employee.findOne({
       _id: employee,
-      department: department,
-      fonction: fonction,
-      nom: nom,
-      prenom: prenom
     });
 
-    if (!existingEmployee) {
+    console.log(existingEmployee);
+
+    if ((existingEmployee.department && existingEmployee.department.toString() !== department) || existingEmployee.fonction !== fonction || existingEmployee.nom !== nom || existingEmployee.prenom !== prenom) {
       return res.status(400).json({ message: "Employé non trouvé." });
     }
 
