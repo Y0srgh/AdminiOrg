@@ -4,6 +4,7 @@ import { Request } from "../models/Request.js";
 export const avanceRequest = async (req, res) => {
   try {
     const { employee, department, fonction, nom, prenom, montant } = req.body;
+    console.log("body", req.body);
 
     // Vérifier que tous les champs sont fournis
     if (!employee || !department || !fonction || !nom || !prenom || !montant) {

@@ -69,6 +69,7 @@ const App = () => {
             <Route exact path="/avance/:department/:id/:fonction" element={<AvanceRequest />} />
             <Route exact path="/refund/:department/:id/:fonction" element={<RefundRequest />} />
 
+
           </Routes>
         </BrowserRouter>
       </div>

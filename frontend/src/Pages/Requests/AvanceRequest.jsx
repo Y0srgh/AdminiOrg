@@ -18,7 +18,7 @@ const AvanceRequest = () => {
     const [formData, setFormData] = useState({
         nom: '',
         prenom: '',
-        montant: '',
+        montant: 0,
     });
     const { id, department, fonction } = useParams();
     const { enqueueSnackbar } = useSnackbar();
@@ -34,9 +34,20 @@ const AvanceRequest = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const requestData = {
+            nom: formData.nom,
+            prenom: formData.prenom,
+            montant: formData.montant,
+            employee: id,
+            department: department,
+            fonction: fonction,
+            type: "Avance",
+        };
+
+        console.log(formData, "employee",id, "depart",department,"fonction", fonction);
 
         try {
-            await axios.post("http://localhost:5000/avance", { ...formData, employee: id, department, type: "Remboursement", fonction });
+            await axios.post("http://localhost:5000/avance", requestData);
             enqueueSnackbar("Votre demande a été enregistrée", {
                 variant: "success",
             });
