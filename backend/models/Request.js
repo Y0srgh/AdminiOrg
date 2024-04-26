@@ -76,7 +76,10 @@ const requestSchema = new mongoose.Schema({
     },
   },
   documents: {
-    type: String
+    type: String,
+    required: function () {
+      return this.type === "Remboursement";
+    },
   },
   validationRH: {
     type: Boolean,
