@@ -3,75 +3,56 @@ import { Employee } from "../models/Employee.js";
 import { Request } from "../models/Request.js";
 import moment from "moment";
 import "moment-timezone";
-async function getSoldeConge(employeeId) {
-  const employee = await Employee.findById(employeeId);
-  if (!employee) {
-    throw new Error("Employee not found solde");
-  }
-  const dateEmbauche = employee.dateEmbauche;
-  const moisTravailles = moment().diff(dateEmbauche, "months");
-  console.log("total :", moisTravailles * 2.5 - employee.solde_conge);
-  console.log("mois travailles :", moisTravailles);
-  console.log("solde ", employee.solde_conge);
-  return moisTravailles * 2.5 - employee.solde_conge;
-}
 
-export const leaveRequest = async (req, res) => {
+export const fichePaieRequest = async (req, res) => {
   try {
-    const { type, employee, department, date_creation, date_debut, date_fin, typeConge, remplaçant, date_reprise } =
-      req.body;
+    const { type, employee, department } = req.body;
+    console.log("req.body from fichePaie", req.body);
 
-    if (!employee || !department || !date_debut || !date_fin || !typeConge || !remplaçant || !date_reprise) {
+    if (!employee || !department) {
       return res
         .status(400)
         .json({ message: "Veuillez fournir tous les champs." });
     }
 
-    // Check remaining leave balance
-    const diffDays = moment(date_fin).diff(moment(date_debut), "days");
-    const soldeConge = await getSoldeConge(employee);
+    const findEmployee = await Employee.findOne({
+      employee,
+      departement : department
+    })
 
-    if (soldeConge < diffDays) {
-      return res.status(400).json({ message: "Vous ne disposez pas d'assez de jours de congé." });
+    if(!findEmployee){
+      return res.status(404).send("Veuillez fournir des informations valides !")
     }
 
     // Vérifier la disponibilité du remplaçant
-    const existingRequests = await Request.find({
-      employee: remplaçant,
-      date_debut: { $lte: date_fin },
-      date_fin: { $gte: date_debut }
-    });
-
-    if (existingRequests.length > 0) {
-      return res.status(400).json({ message: "Le remplaçant n'est pas disponible pendant cette période." });
-    }
-
-    // Vérifier les demandes de congé précédentes de l'employé
-    const previousRequests = await Request.find({
+    const lastRequest = await Request.findOne({
       employee: employee,
-      date_debut: { $lte: date_fin },
-      date_fin: { $gte: date_debut }
+      type: "Fiche_Paie",
+    }).sort({ createdAt: -1 });
+
+    if (lastRequest) {
+      // Si une demande existe
+      const lastRequestDate = moment(lastRequest.createdAt);
+      const currentDate = moment();
+
+      // Vérifier si la dernière demande a été faite ce mois-ci
+      if (lastRequestDate.month() === currentDate.month()) {
+        // Si oui, renvoyer un message d'erreur
+        return res.status(400).json({
+          message: "Vous ne pouvez poser une demande de fiche de paie qu'une fois par mois.",
+        });
+      }
+    }
+
+    // Créer une nouvelle demande si tout est conforme
+    const newReq = await Request.create({
+      type: "Fiche_Paie",
+      employee,
+      department,
     });
-
-    if (previousRequests.length > 0) {
-      return res.status(400).json({ message: "L'employé a déjà une demande de congé pendant cette période." });
-    }
-
-    // Vérifier que la date de début est supérieure à aujourd'hui de deux jours
-    const twoDaysLater = new Date();
-    twoDaysLater.setDate(twoDaysLater.getDate() + 2);
-
-    if (new Date(date_debut) < twoDaysLater) {
-      return res.status(400).json({ message: "La date de début doit être supérieure à aujourd'hui de deux jours." });
-    }
-
-    // Créer la demande de congé
-    const newReq = await Request.create({ type:"Congé", employee, department, date_debut, date_fin, typeConge, remplaçant, date_reprise });
     return res.status(200).send("Votre demande a été enregistrée");
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: error.message });
   }
 };
-
-
