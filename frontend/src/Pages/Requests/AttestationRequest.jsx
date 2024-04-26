@@ -13,13 +13,13 @@ const AttestationRequest = () => {
         const requestData = {
             employee: id,
             department: department,           
-            type: "Fiche_Paie",
+            type: "Attestation",
         };
 
         console.log("employee",id, "depart",department);
 
         try {
-            await axios.post("http://localhost:5000/fiche-paie", requestData);
+            await axios.post("http://localhost:5000/attestation", requestData);
             enqueueSnackbar("Votre demande a été enregistrée", {
                 variant: "success",
             });
@@ -33,7 +33,7 @@ const AttestationRequest = () => {
     return (
         <div className="min-h-screen bg-white flex flex-col justify-center items-center">
             <div className="max-w-md mx-auto mt-8 p-6 bg-gray-100 rounded shadow-md">
-                <h2 className="text-2xl font-semibold mb-4">Demander une fiche de paie</h2>
+                <h2 className="text-2xl font-semibold mb-4">Demander une Attestation de travail</h2>
                 <form onSubmit={handleSubmit}>
                     <button
                         type="submit"
