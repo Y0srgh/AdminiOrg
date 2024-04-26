@@ -1,4 +1,4 @@
-import { Request } from "../models/Request";
+import { Request } from "./../models/Request.js";
 
 export const findAllRequests = async (req, res) => {
     try {
