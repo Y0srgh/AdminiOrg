@@ -84,6 +84,9 @@ const requestSchema = new mongoose.Schema({
   validationRH: {
     type: Boolean,
     default: false,
+    required: function () {
+      return ((this.type === "Congé") || (this.type === "Avance") || (this.type = "Attestation"));
+    },
   },
   validationChef: {
     type: Boolean,

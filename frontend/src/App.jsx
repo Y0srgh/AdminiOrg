@@ -40,6 +40,7 @@ const App = () => {
         <BrowserRouter>
           <Routes>
             <Route exact path="/login" element={<LoginFrom />} />
+            
             <Route exact path="/role" element={<HomeRole />} />
             <Route exact path="/role/ajouter-role" element={<CreateRole />} />
             <Route exact path="/role/modifier-role/:id" element={<EditRole />} />
@@ -59,16 +60,15 @@ const App = () => {
             <Route exact path="/department/detail-department/:id" element={<ShowDepartment />} />
 
             <Route exact path="/employee" element={<HomeEmployee />} />
-            <Route exact path="/employee/modifier-mot-de-passe/:id" element={<UpdatePassword />} />
             <Route exact path="/employee/ajouter-employee" element={<CreateEmployee />} />
             <Route exact path="/employee/effacer-employee/:id" element={<DeleteEmployee />} />
             <Route exact path="/employee/detail-employee/:id" element={<ShowEmployee />} />
 
-            <Route exact path="/leave/:department/:id" element={<LeaveRequest />} />
-            
+            <Route exact path="/leave/:department/:id" element={<LeaveRequest />} />           
             <Route exact path="/avance/:department/:id/:fonction" element={<AvanceRequest />} />
             <Route exact path="/refund/:department/:id/:fonction" element={<RefundRequest />} />
 
+            <Route exact path="/employee/modifier-mot-de-passe/:id" element={<UpdatePassword />} />
 
           </Routes>
         </BrowserRouter>
