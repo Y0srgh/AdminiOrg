@@ -32,7 +32,7 @@ import AvanceRequest from "./Pages/Requests/AvanceRequest";
 
 import UpdatePassword from "./Pages/EmployeeTasks/UpdatePassword";
 import RefundRequest from "./Pages/Requests/RefundRequest";
-
+import FichePaieRequest from "./Pages/Requests/FichePaieRequest";
 const App = () => {
   return (
     <SnackbarProvider>
@@ -68,6 +68,7 @@ const App = () => {
             <Route exact path="/avance/:department/:id/:fonction" element={<AvanceRequest />} />
             <Route exact path="/refund/:department/:id/:fonction" element={<RefundRequest />} />
 
+            <Route exact path="/fiche_paie/:department/:id" element={<FichePaieRequest />} />           
             <Route exact path="/employee/modifier-mot-de-passe/:id" element={<UpdatePassword />} />
 
           </Routes>
