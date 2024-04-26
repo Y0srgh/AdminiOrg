@@ -11,6 +11,7 @@ import leaveRoutes  from './routes/leaveRoutes.js'
 import avanceRoutes from "./routes/avanceRoutes.js";
 import refundRoutes from "./controllers/refundController.js"
 import fichePaieRoutes from "./routes/fichePaieRoutes.js"
+import attestationRoutes from "./routes/attestationRoutes.js"
 //dotenv.config()
 const app = express();
 
@@ -33,6 +34,7 @@ app.use('/leave', leaveRoutes)
 app.use('/avance', avanceRoutes)
 app.use('/refund', refundRoutes)
 app.use('/fiche-paie', fichePaieRoutes)
+app.use('/attestation', attestationRoutes)
 
 
 mongoose
