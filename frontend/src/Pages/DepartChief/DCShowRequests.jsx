@@ -10,7 +10,6 @@ const DCShowRequests = () => {
     const [request, setRequest] = useState(null);
     const [departmentName, setDepartmentName] = useState("");
     const [functionName, setFunctionName] = useState("");
-    const [file, setFile] = useState("");
     const [loading, setLoading] = useState(false);
     const { id } = useParams();
     const navigate = useNavigate();
@@ -24,7 +23,6 @@ const DCShowRequests = () => {
             .then((response) => {
                 console.log("reponse mtaa req id", response.data);
                 setRequest(response.data);
-                setFile(response.data.documents);
                 axios.get(`http://localhost:5000/department/${response.data.department}`)
                     .then((departmentResponse) => {
                         setDepartmentName(departmentResponse.data.nom);
@@ -174,7 +172,7 @@ const DCShowRequests = () => {
                     {request.type === "Remboursement" && (
                         <div className="my-4">
                             <span className="text-xl mr-4 text-gray-500">Justification (PDF):</span>
-                            <iframe src={"http://localhost:5000/chap2_chaines_Markov_continues.pdf"} width="500" height="400"></iframe>
+                            <iframe src={`http://localhost:5000/${request.documents[0]}`} width="700" height="400"></iframe>
                         </div>
                     )}
 
