@@ -20,8 +20,8 @@ const DisplayInvalidRequests = () => {
             .get(`http://localhost:5000/requests`)
             .then((response) => {
                 console.log("resp.data.data",response.data);
-                //const filteredRequests = response.data.data.filter(request => (request.type === "Congé")||(request.type === "Attestation")||(request.type === "Avance"));
-                const filteredRequests = response.data.data.filter(request => (request.type === "Remboursement"));
+                const filteredRequests = response.data.data.filter(request => (request.type === "Congé")||(request.type === "Attestation")||(request.type === "Avance"));
+                //const filteredRequests = response.data.data.filter(request => (request.type === "Remboursement"));
                 setRequests(filteredRequests);
                 //setRequests(response.data.data);
                 setLoading(false)
