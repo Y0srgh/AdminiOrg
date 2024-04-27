@@ -1,10 +1,11 @@
 import express from "express";
 import path from "path";
-import { findAllRequests, findOneRequest } from "../controllers/requestController.js";
+import { findAllRequests, findOneRequest, updateRequest } from "../controllers/requestController.js";
 
 const router = express.Router();
 router.get("/", findAllRequests);
 router.get("/:id", findOneRequest);
+router.put("/:id", updateRequest);
 
 // Route pour récupérer le fichier PDF par son nom de fichier
 router.get('/pdf/:filename', async (req, res) => {

@@ -22,7 +22,28 @@ export const findOneRequest = async (req, res) => {
     const request = await Request.findById(id);
     return res.status(200).json(request);
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
+    res.status(500).send({ message: error.message });
+  }
+};
+
+export const updateRequest = async (req, res) => {
+  try {
+    
+    const { id } = req.params;
+    const {etat }= req.body
+    console.log(req.body);
+    const request = await Request.findById(id);
+    if(!request) {
+      return res.status(404).json({message : "cette demande n'existe pas"})
+    }
+
+    request.validationChef = true ;
+    request.status = etat ;
+    await request.save();
+    return res.status(200).json({ message: "La demande a été validée avec succès." });
+  } catch (error) {
+    console.log(error);
     res.status(500).send({ message: error.message });
   }
 };

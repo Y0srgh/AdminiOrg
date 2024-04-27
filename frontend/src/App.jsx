@@ -35,6 +35,7 @@ import RefundRequest from "./Pages/Requests/RefundRequest";
 import FichePaieRequest from "./Pages/Requests/FichePaieRequest";
 import AttestationRequest from "./Pages/Requests/AttestationRequest";
 import DisplayInvalidRequests from "./Pages/DepartChief/DisplayInvalidRequests";
+import DCShowRequests from "./Pages/DepartChief/DCShowRequests";
 const App = () => {
   return (
     <SnackbarProvider>
@@ -75,6 +76,7 @@ const App = () => {
             <Route exact path="/employee/modifier-mot-de-passe/:id" element={<UpdatePassword />} />
             <Route exact path="/chef_depart/demandes" element={<DisplayInvalidRequests />} />
 
+            <Route exact path="/chef_depart/demandes/demande-details/:id" element={<DCShowRequests />} />
           </Routes>
         </BrowserRouter>
       </div>
