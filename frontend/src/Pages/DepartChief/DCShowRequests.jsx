@@ -72,10 +72,10 @@ const DCShowRequests = () => {
                 enqueueSnackbar("Le demande a été refusée aveec succès avec succès", {
                     variant: "success",
                 });
-                navigate("/chef_depart/demandes");
+                navigate(-1); // Utilisation de la méthode goBack()
             })
             .catch((error) => {
-                navigate("/chef_depart/demandes");
+                navigate(-1); // Utilisation de la méthode goBack()
                 setLoading(false);
                 enqueueSnackbar(error.response.data.message, { variant: "error" });
                 console.log(error);
@@ -96,10 +96,10 @@ const DCShowRequests = () => {
                 enqueueSnackbar("Le demande a été approuvée aveec succès avec succès", {
                     variant: "success",
                 });
-                navigate("/chef_depart/demandes");
+                navigate(-1); // Utilisation de la méthode goBack()
             })
             .catch((error) => {
-                navigate("/chef_depart/demandes");
+                navigate(-1); // Utilisation de la méthode goBack()
                 setLoading(false);
                 enqueueSnackbar(error.response.data.message, { variant: "error" });
                 console.log(error);
@@ -144,8 +144,6 @@ const DCShowRequests = () => {
                         <span>{new Date(request.date_creation).toLocaleDateString('fr-FR', { year: 'numeric', month: 'short', day: 'numeric' })}
                         </span>
                     </div>
-
-
 
                     {request.type === "Congé" && (
                         <>
@@ -194,9 +192,6 @@ const DCShowRequests = () => {
                             <iframe src={`http://localhost:5000/${request.documents[0]}`} width="700" height="400"></iframe>
                         </div>
                     )}
-
-
-
 
                     <div className="flex">
                         <button

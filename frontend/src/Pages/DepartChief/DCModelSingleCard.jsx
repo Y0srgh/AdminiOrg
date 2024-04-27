@@ -34,27 +34,7 @@ const DCModalSingleCard = ({ model, route }) => {
                     <BsInfoCircle className='text-2xl text-green-800 hover:text-black' />
                 </Link>
             </div>
-            {/*
-            <div className='flex justify-between items-center gap-x-2 mt-4 p-4'>
-                <BiShow
-                className='text-3xl text-blue-800 hover:text-black cursor-pointer'
-                onClick={() => setShowModal(true)}
-                />
-                <Link to={`/${route}/details/${model._id}`}>
-                <BsInfoCircle className='text-2xl text-green-800 hover:text-black' />
-                </Link>
-                <Link to={`/${route}/edit/${model._id}`}>
-                <AiOutlineEdit className='text-2xl text-yellow-600 hover:text-black' />
-                </Link>
-                <Link to={`/${route}/delete/${model._id}`}>
-                <MdOutlineDelete className='text-2xl text-red-600 hover:text-black' />
-                </Link>
-            </div>
-            {showModal && (
-                <BookModal book={book} onClose={() => setShowModal(false)} />
-            )}
-      */}
-
+           
         </div>
     );
 };
