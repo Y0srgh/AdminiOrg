@@ -116,6 +116,10 @@ const DCShowRequests = () => {
             ) : request ? (
                 <div className='flex flex-col border-2 border-sky-400 rounded-xl w-fit p-4'>
                     <div className='my-4'>
+                        <span className='text-xl mr-4 text-gray-500'>Etat de la demande</span>
+                        <span>{request.status}</span>
+                    </div>
+                    <div className='my-4'>
                         <span className='text-xl mr-4 text-gray-500'>ID de la demande</span>
                         <span>{request._id}</span>
                     </div>

@@ -21,7 +21,12 @@ const HRDisplayInvalidRequests = () => {
         axios
             .get(`http://localhost:5000/requests`)
             .then((response) => {
-                let filteredRequests = response.data.data;
+
+                const filtered = response.data.data.filter(request => ((request.type === "Congé")&&(request.validationChef))||((request.type === "Attestation")&&(request.validationChef))||((request.type === "Avance")&&(request.validationChef))||((request.type === "Remboursement")&&(!request.validationRH))||((request.type === "Fiche_Paie")&&(!request.validationRH)));
+                //const filtered = response.data.data.filter(request => (request.type === "Remboursement"));
+                setRequests(filtered);
+
+                let filteredRequests = filtered;
                 if (filterType) {
                     filteredRequests = filteredRequests.filter(request => request.type === filterType);
                 }
