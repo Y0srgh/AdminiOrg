@@ -30,7 +30,7 @@ const DCModalSingleCard = ({ model, route }) => {
             </div>
 
             <div className='flex justify-between items-center gap-x-2 mt-4 p-4'>
-                <Link to={`/chef_depart/demandes/demande-details/${model._id}`}>
+                <Link to={`/demandes/demande-details/${model._id}`}>
                     <BsInfoCircle className='text-2xl text-green-800 hover:text-black' />
                 </Link>
             </div>

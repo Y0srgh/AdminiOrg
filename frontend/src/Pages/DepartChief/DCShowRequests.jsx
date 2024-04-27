@@ -10,6 +10,7 @@ const DCShowRequests = () => {
     const [request, setRequest] = useState(null);
     const [departmentName, setDepartmentName] = useState("");
     const [functionName, setFunctionName] = useState("");
+    const [remplacant, setRemplacant] = useState("");
     const [loading, setLoading] = useState(false);
     const { id } = useParams();
     const navigate = useNavigate();
@@ -30,6 +31,15 @@ const DCShowRequests = () => {
                     .catch((error) => {
                         console.error("Error fetching department:", error);
                     });
+
+                response.data.type==="Congé" && (axios.get(`http://localhost:5000/employee/${response.data.remplaçant}`)
+                    .then((remplacantResponse) => {
+                        console.log("remplaçant", );
+                        setRemplacant(remplacantResponse.data.prenom+" "+remplacantResponse.data.nom);
+                    })
+                    .catch((error) => {
+                        console.error("Error fetching department:", error);
+                    }));
 
                 response.data.fonction && (
                     axios.get(`http://localhost:5000/function/${response.data.fonction}`)
@@ -65,7 +75,7 @@ const DCShowRequests = () => {
                 navigate("/chef_depart/demandes");
             })
             .catch((error) => {
-                //navigate("/chef_depart/demandes");
+                navigate("/chef_depart/demandes");
                 setLoading(false);
                 enqueueSnackbar(error.response.data.message, { variant: "error" });
                 console.log(error);
@@ -86,10 +96,10 @@ const DCShowRequests = () => {
                 enqueueSnackbar("Le demande a été approuvée aveec succès avec succès", {
                     variant: "success",
                 });
-                //navigate("/chef_depart/demandes");
+                navigate("/chef_depart/demandes");
             })
             .catch((error) => {
-                //navigate("/chef_depart/demandes");
+                navigate("/chef_depart/demandes");
                 setLoading(false);
                 enqueueSnackbar(error.response.data.message, { variant: "error" });
                 console.log(error);
@@ -131,7 +141,8 @@ const DCShowRequests = () => {
                     </div>
                     <div className='my-4'>
                         <span className='text-xl mr-4 text-gray-500'>Date de la création de la demande</span>
-                        <span>{request.date_creation}</span>
+                        <span>{new Date(request.date_creation).toLocaleDateString('fr-FR', { year: 'numeric', month: 'short', day: 'numeric' })}
+                        </span>
                     </div>
 
 
@@ -144,19 +155,27 @@ const DCShowRequests = () => {
                             </div>
                             <div className='my-4'>
                                 <span className='text-xl mr-4 text-gray-500'>Date de début</span>
-                                <span>{request.date_debut}</span>
+                                <span>
+                                    {new Date(request.date_debut).toLocaleDateString('fr-FR', { year: 'numeric', month: 'short', day: 'numeric' })}
+
+                                </span>
                             </div>
                             <div className='my-4'>
                                 <span className='text-xl mr-4 text-gray-500'>Date fin </span>
-                                <span>{request.date_fin}</span>
+                                <span>
+                                    {new Date(request.date_fin).toLocaleDateString('fr-FR', { year: 'numeric', month: 'short', day: 'numeric' })}
+
+                                </span>
                             </div>
                             <div className='my-4'>
                                 <span className='text-xl mr-4 text-gray-500'>Date de reprise </span>
-                                <span>{request.date_reprise}</span>
+                                <span>
+                                    {new Date(request.date_reprise).toLocaleDateString('fr-FR', { year: 'numeric', month: 'short', day: 'numeric' })}
+                                </span>
                             </div>
                             <div className='my-4'>
                                 <span className='text-xl mr-4 text-gray-500'>Remplaçant </span>
-                                <span>{request.remplaçant}</span>
+                                <span>{remplacant}</span>
                             </div>
                         </>
                     )}

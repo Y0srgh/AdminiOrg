@@ -77,7 +77,7 @@ const App = () => {
             <Route exact path="/employee/modifier-mot-de-passe/:id" element={<UpdatePassword />} />
             <Route exact path="/chef_depart/demandes" element={<DisplayInvalidRequests />} />
 
-            <Route exact path="/chef_depart/demandes/demande-details/:id" element={<DCShowRequests />} />
+            <Route exact path="/demandes/demande-details/:id" element={<DCShowRequests />} />
             <Route exact path="/hr/demandes" element={<HRDisplayInvalidRequests />} />
           </Routes>
         </BrowserRouter>
