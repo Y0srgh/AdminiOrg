@@ -3,6 +3,7 @@ import { Role } from './../models/Role.js';
 export const addRole = async (req, res) => {
     try {
         const { nom } = req.body;
+        console.log(req);
         // Validation des données
         if (!nom) {
             return res.status(400).json({ message: 'Veuillez fournir un nom de rôle.' });

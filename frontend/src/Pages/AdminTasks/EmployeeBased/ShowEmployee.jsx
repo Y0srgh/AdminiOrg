@@ -29,13 +29,7 @@ const ShowEmployee = () => {
                         console.error("Error fetching department:", error);
                     });
                 // Fetch function details
-                axios.get(`http://localhost:5000/function/${response.data.fonction}`)
-                    .then((functionResponse) => {
-                        setFunctionName(functionResponse.data.nom);
-                    })
-                    .catch((error) => {
-                        console.error("Error fetching function:", error);
-                    });
+                c
                 // Fetch role details
                 axios.get(`http://localhost:5000/role/${response.data.role}`)
                     .then((roleResponse) => {

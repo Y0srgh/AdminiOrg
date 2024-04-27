@@ -1,7 +1,7 @@
 import express from "express";
-import { PORT,mongoDBURL } from './config/config.js';
+import mongoose from "./config/db.js";
+import { PORT } from './config/config.js';
 //import dotenv from 'dotenv'
-import  mongoose  from "mongoose";
 import cors from 'cors';
 import employeeRoutes  from './routes/employeeRoutes.js'
 import departmentRoutes  from './routes/departmentRoutes.js'
@@ -18,6 +18,8 @@ const app = express();
 
 //Middleware for parsing reques body
 app.use(express.json());
+
+app.use(express.static('public/refund_files'))
 
 //that allows All Origins with with default of cors(*)
 app.use(cors());
@@ -38,15 +40,6 @@ app.use('/fiche-paie', fichePaieRoutes)
 app.use('/attestation', attestationRoutes)
 app.use('/requests', requestsRoutes)
 
-
-mongoose
-    .connect(mongoDBURL)
-    .then(()=>{
-        console.log('App connected to database');
-        app.listen(PORT, ()=>{
-            console.log(`App is listening to port: ${PORT}`);
-        })
-    })
-    .catch((error)=>{
-        console.log(error);
-    });
+app.listen(PORT, ()=>{
+    console.log(`App is listening to port: ${PORT}`);
+})

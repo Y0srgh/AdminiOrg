@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { BsInfoCircle } from 'react-icons/bs';
 import { MdOutlineAddBox, MdOutlineDelete } from 'react-icons/md';
-
+import DCModalCard from './DCModelCard';
 
 const DisplayInvalidRequests = () => {
 
@@ -19,8 +19,8 @@ const DisplayInvalidRequests = () => {
         axios
             .get(`http://localhost:5000/requests`)
             .then((response) => {
-                console.log(response.data);
-                setRequests(response.data);
+                console.log("resp.data.data",response.data);
+                setRequests(response.data.data);
                 setLoading(false)
             })
             .catch((error) => {
@@ -32,12 +32,9 @@ const DisplayInvalidRequests = () => {
   return (
     <div className='p-4'>
       <div className='flex justify-between items-center'>
-        <h1 className='text-3xl my-8'>Liste des employés</h1>
-        <Link to='/employee/ajouter-employee'>
-          <MdOutlineAddBox className='text-sky-800 text-4xl' />
-        </Link>
+        <h1 className='text-3xl my-8'>Liste des demandes non validées</h1>
       </div>
-      hello
+      <DCModalCard model={requests} route={"requests"} />
     </div>
   )
 }
