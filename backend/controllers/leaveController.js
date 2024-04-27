@@ -27,6 +27,15 @@ export const leaveRequest = async (req, res) => {
         .json({ message: "Veuillez fournir tous les champs." });
     }
 
+    const findEmployee = await Employee.findOne({
+      _id: employee,
+      departement: department
+    })
+
+    if (!findEmployee) {
+      return res.status(404).send("Veuillez fournir des informations valides !")
+    }
+
     // Check remaining leave balance
     const diffDays = moment(date_fin).diff(moment(date_debut), "days");
     const soldeConge = await getSoldeConge(employee);
@@ -66,7 +75,18 @@ export const leaveRequest = async (req, res) => {
     }
 
     // Créer la demande de congé
-    const newReq = await Request.create({ type:"Congé", employee, department, date_debut, date_fin, typeConge, remplaçant, date_reprise });
+    const newReq = await Request.create({ 
+      type:"Congé", 
+      employee, 
+      department,
+      nom: findEmployee.nom,
+      prenom: findEmployee.prenom,
+      fonction: findEmployee.fonction, 
+      date_debut, 
+      date_fin, 
+      typeConge, 
+      remplaçant, 
+      date_reprise });
     return res.status(200).send("Votre demande a été enregistrée");
   } catch (error) {
     console.error(error);

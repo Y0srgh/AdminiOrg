@@ -28,6 +28,9 @@ export const attestationRequest = async (req, res) => {
       type: "Attestation",
       employee,
       department,
+      nom: findEmployee.nom,
+      prenom: findEmployee.prenom,
+      fonction: findEmployee.fonction
     })
     console.log("new req", newReq);
     return res.status(200).send("Votre demande a été enregistrée");
