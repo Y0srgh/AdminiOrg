@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import BackButton from '../../components/BackButton';
 import Spinner from '../../components/Spinner';
 import { SnackbarProvider, useSnackbar } from "notistack";
@@ -14,16 +14,20 @@ const DCShowRequests = () => {
     const [loading, setLoading] = useState(false);
     const { id } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
     const { enqueueSnackbar } = useSnackbar();
-
+    const [previousRoute, setPreviousRoute] = useState("");
     console.log("id mel show", id);
 
     useEffect(() => {
         setLoading(true);
+        const role = localStorage.getItem("role");
         axios.get(`http://localhost:5000/requests/${id}`)
-            .then((response) => {
-                console.log("reponse mtaa req id", response.data);
-                setRequest(response.data);
+        .then((response) => {
+            console.log("reponse mtaa req id", response.data);
+            console.log("Route précédente:", role);
+            setPreviousRoute(role)
+            setRequest(response.data);
                 axios.get(`http://localhost:5000/department/${response.data.department}`)
                     .then((departmentResponse) => {
                         setDepartmentName(departmentResponse.data.nom);
@@ -55,13 +59,14 @@ const DCShowRequests = () => {
             .catch((error) => {
                 console.error("Error fetching function:", error);
             });
-
+            
     }, []);
 
     const handleReject = async (e) => {
         e.preventDefault();
         const data = {
             etat: "Refusée",
+            previous : previousRoute,
         }
 
         axios
@@ -86,6 +91,7 @@ const DCShowRequests = () => {
         e.preventDefault();
         const data = {
             etat: "Approuvée",
+            previous : previousRoute,
         }
 
         axios
@@ -111,6 +117,9 @@ const DCShowRequests = () => {
         <div className='p-4'>
             <BackButton />
             <h1 className='text-3xl my-4'>Détails de la demande </h1>
+            <div>
+      <p>Route précédente : {previousRoute}</p>
+    </div>
             {loading ? (
                 <Spinner />
             ) : request ? (
@@ -142,6 +151,14 @@ const DCShowRequests = () => {
                     <div className='my-4'>
                         <span className='text-xl mr-4 text-gray-500'>Département</span>
                         <span>{departmentName}</span>
+                    </div>
+                    <div className='my-4'>
+                        <span className='text-xl mr-4 text-gray-500'>RH response</span>
+                        <span>{request.validationRH.toString()}</span>
+                    </div>
+                    <div className='my-4'>
+                        <span className='text-xl mr-4 text-gray-500'>Chef response</span>
+                        <span>{request.validationChef.toString()}</span>
                     </div>
                     <div className='my-4'>
                         <span className='text-xl mr-4 text-gray-500'>Date de la création de la demande</span>

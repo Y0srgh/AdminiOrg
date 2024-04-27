@@ -18,6 +18,7 @@ const HRDisplayInvalidRequests = () => {
 
     useEffect(() => {
         setLoading(true);
+        localStorage.setItem("role","hr")
         axios
             .get(`http://localhost:5000/requests`)
             .then((response) => {

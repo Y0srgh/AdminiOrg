@@ -31,15 +31,21 @@ export const updateRequest = async (req, res) => {
   try {
     
     const { id } = req.params;
-    const {etat }= req.body
+    const {etat, previous }= req.body
     console.log(req.body);
     const request = await Request.findById(id);
     if(!request) {
       return res.status(404).json({message : "cette demande n'existe pas"})
     }
 
-    request.validationChef = true ;
-    request.status = etat ;
+    if(previous === "hr"){
+      request.status = etat ;
+      request.validationRH = true
+    }else {
+      if(previous === "chef"){
+        request.validationChef = true ;
+      }
+    }
     await request.save();
     return res.status(200).json({ message: "La demande a été validée avec succès." });
   } catch (error) {

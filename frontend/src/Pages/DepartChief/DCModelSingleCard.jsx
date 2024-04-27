@@ -18,6 +18,10 @@ const DCModalSingleCard = ({ model, route }) => {
                 {new Date(model.date_creation).toLocaleDateString('fr-FR', { year: 'numeric', month: 'short', day: 'numeric' })}
 
             </h2>
+            <h2 className={"absolute top-20 right-2 px-4 py-1 rounded-lg " + ((model.status === "Approuvée" && "bg-green-300") || (model.status === "Refusée" && "bg-red-300") || (model.status === "Annulée" && "bg-orange-300")||(model.status === "En_attente" && "bg-yellow-300"))}>
+                {model.status}
+
+            </h2>
             <h4 className='my-7 text-gray-500'>{"id : " + model._id}</h4>
             <div className='flex justify-start items-center gap-x-2'>
                 <PiBookOpenTextLight className='text-red-300 text-2xl' />
@@ -34,7 +38,7 @@ const DCModalSingleCard = ({ model, route }) => {
                     <BsInfoCircle className='text-2xl text-green-800 hover:text-black' />
                 </Link>
             </div>
-           
+
         </div>
     );
 };
