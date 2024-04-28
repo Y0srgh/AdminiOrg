@@ -34,6 +34,7 @@ const employeeSchema = mongoose.Schema(
     mot_de_passe: {
       type: String,
       required: true,
+      select: false,
     },
     solde_conge: {
       type: Number,
@@ -58,13 +59,13 @@ employeeSchema.pre("save", async function (next) {
   next();
 });
 
-employeeSchema.methods.generateAuthToken = function () {
+/*employeeSchema.methods.generateAuthToken = function () {
   const token = jwt.sign({ _id: this._id }, process.env.JWTPRIVATEKEYRSA, {
     expiresIn: "7d",
     algorithm: "RS256" 
   });
   return token;
-};
+};*/
 
 export const validate = (data) => {
   const schema = Joi.object({

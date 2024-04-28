@@ -9,6 +9,8 @@ import {
 
 const router = express.Router();
 
+import { verifyJWT } from "../middleware/verifyJWT.js";
+router.use(verifyJWT);
 // Route pour ajouter un département
 router.post("/", addDepartment);
 

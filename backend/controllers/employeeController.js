@@ -2,12 +2,16 @@ import { Employee } from "./../models/Employee.js";
 import { Department } from "./../models/Department.js";
 import { Function } from "./../models/Function.js";
 import { Role } from "./../models/Role.js";
+import asyncHandler from "express-async-handler"
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import Joi from "joi";
+import { JWTSECRETKEY, ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from "./../config/config.js"
+
 
 export const addEmployee = async (req, res) => {
   try {
-    const { nom, prenom, departement, fonction, role, email, dateEmbauche ,mot_de_passe } =
+    const { nom, prenom, departement, fonction, role, email, dateEmbauche, mot_de_passe } =
       req.body;
     console.log(req.body);
     if (
@@ -17,7 +21,7 @@ export const addEmployee = async (req, res) => {
       !fonction ||
       !role ||
       !email ||
-      !dateEmbauche||
+      !dateEmbauche ||
       !mot_de_passe
     ) {
       return res
@@ -115,7 +119,7 @@ export const updatePassword = async (req, res) => {
 
     const hashedOldPassword = await bcrypt.hash(employee.mot_de_passe, 10);
 
-    console.log("mot_de_passe : ",employee.mot_de_passe, "ancien",ancien_mot_de_passe,"ancien hashed",hashedOldPassword,"nouveau",mot_de_passe);
+    console.log("mot_de_passe : ", employee.mot_de_passe, "ancien", ancien_mot_de_passe, "ancien hashed", hashedOldPassword, "nouveau", mot_de_passe);
 
     // Vérification de l'ancien mot de passe
     const isPasswordCorrect = await bcrypt.compare(employee.mot_de_passe, hashedOldPassword);
@@ -236,33 +240,116 @@ export const deleteEmployee = async (req, res) => {
   }
 };
 
+const generateAuthToken = id => {
+  return jwt.sign({ id }, JWTSECRETKEY, {
+    expiresIn: "7d",
+  });
+};
+
 export const authEmployee = async (req, res) => {
   try {
-    const { error } = validate(req.body);
-    if (error) {
-      return res.status(400).send({ message: error.details[0].message });
+    const { email, mot_de_passe } = req.body;
+
+    if (!email || !mot_de_passe) {
+      return res.status(400).json({ message: "Veuillez fournir tous les" })
     }
 
-    const employee = await Employee.findOne({ email: req.body.email });
-    if (!employee)
+    const employee = await Employee.findOne({ email }).select('+mot_de_passe');
+    if (!employee) {
       return res.status(401).send({ message: "Invald Email or Password" });
+    }
 
-    const validPassword = await bcrypt.compare(req.body.mot_de_passe,employee.mot_de_passe);
-    if (!validPassword)
+    const validPassword = await bcrypt.compare(mot_de_passe, employee.mot_de_passe);
+    if (!validPassword) {
       return res.status(401).send({ message: "Invald Email or Password" });
+    }
 
-    const token = employee.generateAuthToken();
-    res.status(200).send({ data: token, message: "Logged in successfully" });
+    /*const token = generateAuthToken(employee._id);
+    res.status(200).json({ 
+      token, 
+      message: "Logged in successfully" 
+    });*/
+
+    const accessToken = jwt.sign(
+      {
+        "UserInfo": {
+          "email": employee.email,
+          "role": employee.role,
+          "department": employee.departement,
+        }
+      },
+      ACCESS_TOKEN_SECRET,
+      { expiresIn: '1m' }
+    );
+
+    const refreshToken = jwt.sign(
+      { "email": employee.email },
+      REFRESH_TOKEN_SECRET,
+      { expiresIn: '1d' }
+    );
+
+    res.cookie('jwt', refreshToken, {
+      httpOnly: true, //accessible only by web server
+      secure: true, //https
+      sameSite: 'None', //cross-site cookie
+      maxAge: 7 * 24 * 60 * 60 * 1000 //cookie expiry
+    })
+
+    res.status(200).json({ accessToken })
+
   } catch (error) {
     console.log(error);
     return res.status(500).send({ message: "Internal Server Error" });
   }
 };
 
+export const refresh = (req, res) => {
+  const cookies = req.cookies;
+  if (!cookies?.jwt) return res.status(401).json({ message: 'Unauthorized 1' });
+
+  const refreshToken = cookies.jwt
+
+  jwt.verify(
+    refreshToken,
+    REFRESH_TOKEN_SECRET,
+    asyncHandler(async (err, decoded) => {
+      if (err) return res.status(403).json({ message: 'Foridden' })
+
+      const foundUser = await Employee.findOne({ email: decoded.email })
+
+      if (!foundUser) return res.status(401).json({ message: 'Unauthorized 2' })
+
+      const accessToken = jwt.sign(
+        {
+          "UserInfo": {
+            "email": foundUser.email,
+            "role": foundUser.role,
+            "department": foundUser.departement,
+          }
+        },
+        ACCESS_TOKEN_SECRET,
+        { expiresIn: '1m' }
+      );
+
+      res.status(201).json({accessToken});
+      
+    })
+
+  )
+}
+
+export const logout = (req, res) => {
+  const cookies = req.cookies;
+  if(!cookies?.jwt) return res.sendStatus(204)
+  res.clearCookie('jwt', {httpOnly: true, sameSite: 'None', secure: true})
+  res.status(201).json({message: 'Cookie cleared'})
+}
+
+/*
 const validate = (data) => {
   const schema = Joi.object({
     email: Joi.string().email().required().label("Email"),
     mot_de_passe: Joi.string().required().label("Mot de passe"),
   });
   return schema.validate(data);
-};
+};*/

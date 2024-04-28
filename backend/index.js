@@ -3,6 +3,7 @@ import mongoose from "./config/db.js";
 import { PORT } from './config/config.js';
 //import dotenv from 'dotenv'
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import employeeRoutes  from './routes/employeeRoutes.js'
 import departmentRoutes  from './routes/departmentRoutes.js'
 import functionRoutes  from './routes/functionRoutes.js'
@@ -18,6 +19,7 @@ const app = express();
 
 //Middleware for parsing reques body
 app.use(express.json());
+app.use(cookieParser())
 
 app.use(express.static('public/refund_files'))
 
