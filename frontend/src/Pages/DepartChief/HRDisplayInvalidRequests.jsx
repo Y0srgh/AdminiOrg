@@ -23,7 +23,7 @@ const HRDisplayInvalidRequests = () => {
             .get(`http://localhost:5000/requests`)
             .then((response) => {
 
-                const filtered = response.data.data.filter(request => ((request.type === "Congé")&&(request.validationChef))||((request.type === "Attestation")&&(request.validationChef))||((request.type === "Avance")&&(request.validationChef))||((request.type === "Remboursement")&&(!request.validationRH))||((request.type === "Fiche_Paie")&&(!request.validationRH)));
+                const filtered = response.data.data.filter(request => ((request.type === "Congé")&&((request.validationChef)&&(request.status!=="Refusée")))||((request.type === "Attestation")&&((request.validationChef)&&(request.status!=="Refusée")))||((request.type === "Avance")&&((request.validationChef)&&(request.status!=="Refusée")))||((request.type === "Remboursement")&&(!request.validationRH))||((request.type === "Fiche_Paie")&&(!request.validationRH)));
                 //const filtered = response.data.data.filter(request => (request.type === "Remboursement"));
                 setRequests(filtered);
 

@@ -37,6 +37,7 @@ import AttestationRequest from "./Pages/Requests/AttestationRequest";
 import DisplayInvalidRequests from "./Pages/DepartChief/DisplayInvalidRequests";
 import DCShowRequests from "./Pages/DepartChief/DCShowRequests";
 import HRDisplayInvalidRequests from "./Pages/DepartChief/HRDisplayInvalidRequests";
+import EmployeeRequests from "./Pages/DepartChief/EmployeeRequests";
 const App = () => {
   return (
     <SnackbarProvider>
@@ -79,6 +80,7 @@ const App = () => {
 
             <Route exact path="/demandes/demande-details/:id" element={<DCShowRequests />} />
             <Route exact path="/hr/demandes" element={<HRDisplayInvalidRequests />} />
+            <Route exact path="/employee/demandes/:id" element={<EmployeeRequests />} />
           </Routes>
         </BrowserRouter>
       </div>

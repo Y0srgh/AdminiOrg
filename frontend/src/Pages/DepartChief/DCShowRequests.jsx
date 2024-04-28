@@ -23,11 +23,11 @@ const DCShowRequests = () => {
         setLoading(true);
         const role = localStorage.getItem("role");
         axios.get(`http://localhost:5000/requests/${id}`)
-        .then((response) => {
-            console.log("reponse mtaa req id", response.data);
-            console.log("Route précédente:", role);
-            setPreviousRoute(role)
-            setRequest(response.data);
+            .then((response) => {
+                console.log("reponse mtaa req id", response.data);
+                console.log("Route précédente:", role);
+                setPreviousRoute(role)
+                setRequest(response.data);
                 axios.get(`http://localhost:5000/department/${response.data.department}`)
                     .then((departmentResponse) => {
                         setDepartmentName(departmentResponse.data.nom);
@@ -36,10 +36,10 @@ const DCShowRequests = () => {
                         console.error("Error fetching department:", error);
                     });
 
-                response.data.type==="Congé" && (axios.get(`http://localhost:5000/employee/${response.data.remplaçant}`)
+                response.data.type === "Congé" && (axios.get(`http://localhost:5000/employee/${response.data.remplaçant}`)
                     .then((remplacantResponse) => {
-                        console.log("remplaçant", );
-                        setRemplacant(remplacantResponse.data.prenom+" "+remplacantResponse.data.nom);
+                        console.log("remplaçant",);
+                        setRemplacant(remplacantResponse.data.prenom + " " + remplacantResponse.data.nom);
                     })
                     .catch((error) => {
                         console.error("Error fetching department:", error);
@@ -59,14 +59,14 @@ const DCShowRequests = () => {
             .catch((error) => {
                 console.error("Error fetching function:", error);
             });
-            
+
     }, []);
 
     const handleReject = async (e) => {
         e.preventDefault();
         const data = {
             etat: "Refusée",
-            previous : previousRoute,
+            previous: previousRoute,
         }
 
         axios
@@ -91,7 +91,32 @@ const DCShowRequests = () => {
         e.preventDefault();
         const data = {
             etat: "Approuvée",
-            previous : previousRoute,
+            previous: previousRoute,
+        }
+
+        axios
+            .put(`http://localhost:5000/requests/${id}`, data)
+            .then((response) => {
+                console.log("response : ", response);
+                setLoading(false);
+                enqueueSnackbar("Le demande a été approuvée aveec succès avec succès", {
+                    variant: "success",
+                });
+                navigate(-1); // Utilisation de la méthode goBack()
+            })
+            .catch((error) => {
+                navigate(-1); // Utilisation de la méthode goBack()
+                setLoading(false);
+                enqueueSnackbar(error.response.data.message, { variant: "error" });
+                console.log(error);
+            });
+
+    }
+    const handleCancel = async (e) => {
+        e.preventDefault();
+        const data = {
+            etat: "Annulée",
+            previous: previousRoute,
         }
 
         axios
@@ -118,8 +143,8 @@ const DCShowRequests = () => {
             <BackButton />
             <h1 className='text-3xl my-4'>Détails de la demande </h1>
             <div>
-      <p>Route précédente : {previousRoute}</p>
-    </div>
+                <p>Route précédente : {previousRoute}</p>
+            </div>
             {loading ? (
                 <Spinner />
             ) : request ? (
@@ -214,7 +239,7 @@ const DCShowRequests = () => {
                         </div>
                     )}
 
-                    <div className="flex">
+                    {(previousRoute && (previousRoute !== "employee")) && (<div className="flex">
                         <button
                             type="submit"
                             onClick={handleValidate}
@@ -230,6 +255,19 @@ const DCShowRequests = () => {
                             Refuser
                         </button>
                     </div>
+                    )}
+
+                    {(previousRoute && (previousRoute === "employee")&&(request.status==="En_attente")) && (<div className="flex">
+                        <button
+                            type="submit"
+                            onClick={handleCancel}
+                            className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-1 px-2 rounded mr-2 text-sm"
+                        >
+                            Annuler
+                        </button>
+                        
+                    </div>
+                    )}
 
                 </div>
             ) : (

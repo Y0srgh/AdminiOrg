@@ -15,6 +15,22 @@ export const findAllRequests = async (req, res) => {
     }
 };
 
+export const findEmployeeRequest = async (req, res) => {
+    try {
+      const {id} = req.params;
+      const requests = await Request.find({employee:id});
+      console.log(typeof(req),typeof(res));
+      return res.status(200).json({
+        data: requests,
+      });
+    } catch (error) {
+      console.error("Erreur lors de la récupération des demandes :", error);
+      return res.status(500).json({
+        message: "Une erreur est survenue lors de la récupération des demandes.",
+      });
+    }
+};
+
 export const findOneRequest = async (req, res) => {
   try {
     
@@ -42,9 +58,15 @@ export const updateRequest = async (req, res) => {
       request.status = etat ;
       request.validationRH = true
     }else {
-      if(previous === "chef"){
+      if((previous === "chef")&&(etat === "Refusée")){
         request.validationChef = true ;
+        request.status = etat ;
+      }else {
+      if(previous === "employee"){
+        request.status = etat ;
+
       }
+    }
     }
     await request.save();
     return res.status(200).json({ message: "La demande a été validée avec succès." });
