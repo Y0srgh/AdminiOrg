@@ -39,12 +39,18 @@ import DCShowRequests from "./Pages/DepartChief/DCShowRequests";
 import HRDisplayInvalidRequests from "./Pages/DepartChief/HRDisplayInvalidRequests";
 import EmployeeRequests from "./Pages/DepartChief/EmployeeRequests";
 const App = () => {
+  const token = localStorage.getItem('accessToken');
+  console.log("tokeeen",token);
+
   return (
     <SnackbarProvider>
       <div>
         <BrowserRouter>
           <Routes>
+            {token && (<>
             <Route exact path="/login" element={<LoginFrom />} />
+            
+            {/**admin preserved routes */}
             
             <Route exact path="/role" element={<HomeRole />} />
             <Route exact path="/role/ajouter-role" element={<CreateRole />} />
@@ -64,10 +70,13 @@ const App = () => {
             <Route exact path="/department/modifier-department/:id" element={<EditDepartment />} />
             <Route exact path="/department/detail-department/:id" element={<ShowDepartment />} />
 
+
             <Route exact path="/employee" element={<HomeEmployee />} />
             <Route exact path="/employee/ajouter-employee" element={<CreateEmployee />} />
             <Route exact path="/employee/effacer-employee/:id" element={<DeleteEmployee />} />
             <Route exact path="/employee/detail-employee/:id" element={<ShowEmployee />} />
+{/*end of admin preserved routes */}
+
 
             <Route exact path="/leave/:department/:id" element={<LeaveRequest />} />           
             <Route exact path="/avance/:department/:id/:fonction" element={<AvanceRequest />} />
@@ -81,7 +90,10 @@ const App = () => {
             <Route exact path="/demandes/demande-details/:id" element={<DCShowRequests />} />
             <Route exact path="/hr/demandes" element={<HRDisplayInvalidRequests />} />
             <Route exact path="/employee/demandes/:id" element={<EmployeeRequests />} />
-          </Routes>
+            </>)}
+
+            <Route path="/*" element={<LoginFrom />} />
+            </Routes>
         </BrowserRouter>
       </div>
     </SnackbarProvider>

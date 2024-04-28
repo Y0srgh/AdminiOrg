@@ -2,92 +2,44 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from 'axios';
 import { AiOutlineUser, AiOutlineLock } from "react-icons/ai";
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from "react-redux";
 import { SnackbarProvider, useSnackbar } from "notistack";
-//import jwt_decode from 'jwt-decode';
 import { jwtDecode } from "jwt-decode";
-import { setCredentials } from "../../features/auth/authSlice.js";
-import { useLoginMutation } from "../../features/auth/authApiSlice.js";
+
 
 const LoginFrom = () => {
   const [email, setEmail] = useState("");
   const [mot_de_passe, setMot_de_passe] = useState("");
-  const [errMsg, setErrMsg] = useState("");
-  const userRef = useRef();
-  const errRef = useRef();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const dispatch = useDispatch();
-  const [login, {isLoading}] = useLoginMutation();
-
-  useEffect(()=>{
-    userRef.current.focus()
-  },[])
-
-  useEffect(()=>{
-   setErrMsg('')
-  },[email, mot_de_passe])
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const {accessToken} = await login({email, mot_de_passe}).unwrap()
-      console.log("access token", accessToken);
-      dispatch(setCredentials({accessToken}))
-      setEmail('')
-      setMot_de_passe('')
-      const decodedToken = jwtDecode(accessToken);
-      console.log("decoded token", decodedToken);
-      //navigate('')
-
-      // Get the user's role from the decoded token
-      const { role } = decodedToken.UserInfo;
-      console.log("role : ", role);
-      let id = role ;
-      const roleResponse = await axios.get(`http://localhost:5000/role/${id}`);
-      if (!roleResponse) {
-        throw new Error('Failed to fetch role details');
-      }
-      console.log("roleResponse", roleResponse);
-      /*const roleData = await roleResponse.json();*/
-
-      // Get the name of the role from the response
-      const roleName = roleResponse.data.nom;
-      console.log("role Name", roleName);
-      id = decodedToken.UserInfo.id;
-      console.log("id", id);
-
-      if (roleName === 'admin') {
-        navigate('/hr/demandes'); // Redirect to admin dashboard
-      } else if (roleName === 'employé') {
-        navigate(`/employee/demandes/${id}`); // Redirect to employee dashboard
-      } else {
-        navigate(`/chef_depart/demandes/${id}`) // Redirect to a default route
-      }
+      const data = {
+        email,
+        mot_de_passe,
+      };
+  
+      // Sending login request to backend
+      const response = await axios.post('http://localhost:5000/employee/auth', data);
+      console.log(response);
+      // If login is successful, navigate to the dashboard or any other desired page
+      if (response.status === 200) {
+        const { accessToken } = response.data;
+        localStorage.setItem('accessToken', accessToken); // Store the access token in local storage
+        enqueueSnackbar('Logged in successfully!', { variant: 'success' });
+      }/*
       
+      navigate('/dashboard'); // Navigate to the dashboard or any other desired page
+      */
     } catch (error) {
-      console.log(error);
-      if(!err.status){
-        setErrMsg('No server Response');
-      }else if (err.status === 400){
-        setErrMsg('Missing Username or Password');
-      }else if (err.status === 401){
-        setErrMsg('Unauthorized');
-      }else {
-        setErrMsg(err.data?.message);
-      }
-      errRef.current.focus();
+      // If there's an error, show an error message
+      enqueueSnackbar(error.response.data.message, { variant: 'error' });
     }
   };
 
-  const errClass = errMsg ? "errmsg" : "offscreen"
-
-  if(isLoading) return <h2>Loading...</h2>
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <p ref={errRef} className="errClass" aria-live="assertive">{errMsg}</p>
-
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Connectez vous !</h2>
@@ -101,7 +53,6 @@ const LoginFrom = () => {
                   name="email"
                   type="email"
                   required
-                  ref={userRef}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
