@@ -1,8 +1,37 @@
 import React from "react";
 import { AiOutlineUser, AiOutlineLock } from "react-icons/ai";
 import { Link } from 'react-router-dom';
+import { useDispatch } from "react-redux";
 
 const LoginFrom = () => {
+  const dispatch = useDispatch();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    // Perform login logic
+    // After successful login, dispatch 'LOGIN' action with the access token
+    //dispatch({ type: 'LOGIN', payload: { accessToken: 'your_access_token_here' } });
+    try {
+      const response = await axios.post('http://localhost:5000/employee/auth', {
+        email: e.target.email.value,
+        password: e.target.password.value,
+      });
+
+      // If login is successful, obtain the access token from the response
+      const accessToken = response.data.accessToken;
+
+      // Dispatch the 'LOGIN' action with the obtained access token
+      dispatch({ type: 'LOGIN', payload: { accessToken } });
+
+      // Optionally, you can redirect the user to a different page
+      // window.location.href = '/dashboard';
+    } catch (error) {
+      console.error('Login error:', error);
+      // Handle login error (e.g., display error message to the user)
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -14,7 +43,7 @@ const LoginFrom = () => {
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
               <div className="relative">
-                <input name="username" type="text" required className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Email"/>
+                <input name="email" type="email" required className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Email"/>
                 <AiOutlineUser className="absolute top-0 right-0 mt-2 mr-3 h-4 w-4 text-gray-400" />
               </div>
             </div>
