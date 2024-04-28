@@ -12,55 +12,75 @@ import { useLoginMutation } from "../../features/auth/authApiSlice.js";
 const LoginFrom = () => {
   const [email, setEmail] = useState("");
   const [mot_de_passe, setMot_de_passe] = useState("");
-  const [errMsg, setErrMsg] = useState("");
-  const userRef = useRef();
-  const errRef = useRef();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
-  const [login, {isLoading}] = useLoginMutation();
-
-  useEffect(()=>{
-    userRef.current.focus()
-  },[])
-
-  useEffect(()=>{
-   setErrMsg('')
-  },[email, mot_de_passe])
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    const data = {
+      email,
+      mot_de_passe,
+    }
+
+    // Perform login logic
+    // After successful login, dispatch 'LOGIN' action with the access token
+    //dispatch({ type: 'LOGIN', payload: { accessToken: 'your_access_token_here' } });
     try {
-      const {accessToken} = await login({email, mot_de_passe}).unwrap()
-      console.log("access token", accessToken);
-      dispatch(setCredentials({accessToken}))
-      setEmail('')
-      setMot_de_passe('')
-      //navigate('')
-      
-    } catch (error) {
-      console.log(error);
-      if(!err.status){
-        setErrMsg('No server Response');
-      }else if (err.status === 400){
-        setErrMsg('Missing Username or Password');
-      }else if (err.status === 401){
-        setErrMsg('Unauthorized');
-      }else {
-        setErrMsg(err.data?.message);
+      const response = await axios.post('http://localhost:5000/employee/auth', data);
+
+      // If login is successful, obtain the access token from the response
+      const accessToken = response.data.accessToken;
+      console.log("response", response);
+      console.log('accessToken', accessToken);
+
+      // Decode the JWT token to extract user information
+      const decodedToken = jwtDecode(accessToken);
+      console.log("decoded token", decodedToken);
+      // Get the user's role from the decoded token
+      const { role } = decodedToken.UserInfo;
+      console.log("role : ", role);
+      let id = role ;
+      const roleResponse = await axios.get(`http://localhost:5000/role/${id}`);
+      if (!roleResponse) {
+        throw new Error('Failed to fetch role details');
       }
-      errRef.current.focus();
+      console.log("roleResponse", roleResponse);
+      /*const roleData = await roleResponse.json();*/
+
+      // Get the name of the role from the response
+      const roleName = roleResponse.data.nom;
+      console.log("role Name", roleName);
+      id = decodedToken.UserInfo.id;
+      console.log("id", id);
+
+      enqueueSnackbar("L'employé a été ajouté avec succès", {
+        variant: "success",
+      });
+      // Dispatch the 'LOGIN' action with the obtained access token
+      dispatch({ type: 'LOGIN', payload: { accessToken } });
+
+      console.log("role name 1", roleName);
+      // Navigate based on the user's role name
+    if (roleName === 'admin') {
+      navigate('/hr/demandes'); // Redirect to admin dashboard
+    } else if (roleName === 'employé') {
+      navigate(`/employee/demandes/${id}`); // Redirect to employee dashboard
+    } else {
+      navigate(`/chef_depart/demandes/${id}`) // Redirect to a default route
+    }
+      // Optionally, you can redirect the user to a different page
+      // window.location.href = '/dashboard';
+    } catch (error) {
+      //enqueueSnackbar(error.response, { variant: "error" });
+
+      console.error('Login error:', error);
+      // Handle login error (e.g., display error message to the user)
     }
   };
 
-  const errClass = errMsg ? "errmsg" : "offscreen"
-
-  if(isLoading) return <h2>Loading...</h2>
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <p ref={errRef} className="errClass" aria-live="assertive">{errMsg}</p>
-
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Connectez vous !</h2>
@@ -74,7 +94,6 @@ const LoginFrom = () => {
                   name="email"
                   type="email"
                   required
-                  ref={userRef}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"

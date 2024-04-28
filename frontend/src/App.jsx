@@ -76,7 +76,7 @@ const App = () => {
             <Route exact path="/fiche_paie/:department/:id" element={<FichePaieRequest />} />           
             <Route exact path="/attestationDeTravail/:department/:id" element={<AttestationRequest />} />           
             <Route exact path="/employee/modifier-mot-de-passe/:id" element={<UpdatePassword />} />
-            <Route exact path="/chef_depart/demandes" element={<DisplayInvalidRequests />} />
+            <Route exact path="/chef_depart/demandes/:id" element={<DisplayInvalidRequests />} />
 
             <Route exact path="/demandes/demande-details/:id" element={<DCShowRequests />} />
             <Route exact path="/hr/demandes" element={<HRDisplayInvalidRequests />} />

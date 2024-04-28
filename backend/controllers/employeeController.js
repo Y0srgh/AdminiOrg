@@ -105,17 +105,21 @@ export const findOneEmployee = async (req, res) => {
     res.status(500).send({ message: error.message });
   }
 };
-
+/*
 export const updatePassword = async (req, res) => {
   try {
     const { id } = req.params;
-    const { mot_de_passe, ancien_mot_de_passe } = req.body;
-
+    //const { mot_de_passe, ancien_mot_de_passe } = req.body;
+    //console.log(req.body);
+    const mot_de_passe = req.body.mot_de_passe ; 
+    const ancien_mot_de_passe = req.body.ancien_mot_de_passe;
     // Vérification si l'employé existe
     const employee = await Employee.findById(id);
     if (!employee) {
       return res.status(404).json({ message: "Employé non trouvé." });
     }
+
+    if(ancien_mot_de_passe){
 
     const hashedOldPassword = await bcrypt.hash(employee.mot_de_passe, 10);
 
@@ -126,6 +130,7 @@ export const updatePassword = async (req, res) => {
     if (!isPasswordCorrect) {
       return res.status(400).json({ message: "Ancien mot de passe incorrect." });
     }
+  }
 
     // Hachage du nouveau mot de passe
     const hashedPassword = await bcrypt.hash(mot_de_passe, 10);
@@ -146,6 +151,37 @@ export const updatePassword = async (req, res) => {
       message:
         "Une erreur est survenue lors de la mise à jour du mot de passe.",
     });
+  }
+};
+*/
+
+export const updatePassword = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { mot_de_passe, ancien_mot_de_passe } = req.body;
+    const employee = await Employee.findById(id);
+    if (!employee) {
+      return res.status(404).json({ message: "Employé non trouvé." });
+    }
+
+    if (ancien_mot_de_passe) {
+      const isPasswordCorrect = await bcrypt.compare(
+        ancien_mot_de_passe,
+        employee.mot_de_passe
+      );
+      if (!isPasswordCorrect) {
+        return res.status(400).json({ message: "Ancien mot de passe incorrect." });
+      }
+    }
+
+    const hashedPassword = await bcrypt.hash(mot_de_passe, 10);
+    employee.mot_de_passe = hashedPassword;
+    await employee.save();
+
+    return res.status(200).json({ message: "Mot de passe mis à jour avec succès." });
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour du mot de passe de l'employé :", error);
+    return res.status(500).json({ message: "Une erreur est survenue lors de la mise à jour du mot de passe." });
   }
 };
 
@@ -256,12 +292,12 @@ export const authEmployee = async (req, res) => {
 
     const employee = await Employee.findOne({ email }).select('+mot_de_passe');
     if (!employee) {
-      return res.status(401).send({ message: "Invald Email or Password" });
+      return res.status(401).send({ message: "Invald Email " });
     }
 
     const validPassword = await bcrypt.compare(mot_de_passe, employee.mot_de_passe);
     if (!validPassword) {
-      return res.status(401).send({ message: "Invald Email or Password" });
+      return res.status(401).send({ message: "Invald Password" });
     }
 
     /*const token = generateAuthToken(employee._id);
@@ -273,6 +309,7 @@ export const authEmployee = async (req, res) => {
     const accessToken = jwt.sign(
       {
         "UserInfo": {
+          "id": employee._id,
           "email": employee.email,
           "role": employee.role,
           "department": employee.departement,
@@ -283,7 +320,8 @@ export const authEmployee = async (req, res) => {
     );
 
     const refreshToken = jwt.sign(
-      { "email": employee.email },
+      { "id": employee._id,
+      "email": employee.email },
       REFRESH_TOKEN_SECRET,
       { expiresIn: '1d' }
     );
@@ -322,6 +360,7 @@ export const refresh = (req, res) => {
       const accessToken = jwt.sign(
         {
           "UserInfo": {
+            "id": foundUser._id,
             "email": foundUser.email,
             "role": foundUser.role,
             "department": foundUser.departement,
