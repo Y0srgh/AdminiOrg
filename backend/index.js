@@ -3,6 +3,8 @@ import mongoose from "./config/db.js";
 import { PORT } from './config/config.js';
 //import dotenv from 'dotenv'
 import cors from 'cors';
+//const corsOptions = require('./config/corsOptions')
+import { corsOptions } from "./config/corsOptions.js";
 import cookieParser from 'cookie-parser';
 import employeeRoutes  from './routes/employeeRoutes.js'
 import departmentRoutes  from './routes/departmentRoutes.js'
@@ -24,8 +26,9 @@ app.use(cookieParser())
 app.use(express.static('public/refund_files'))
 
 //that allows All Origins with with default of cors(*)
-app.use(cors());
-  
+//app.use(cors());
+app.use(cors(corsOptions))
+
 app.get('/',(req,resp)=>{
     console.log(req);
     return resp.status(200).send('aslema mel org app')

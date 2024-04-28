@@ -36,7 +36,34 @@ const LoginFrom = () => {
       dispatch(setCredentials({accessToken}))
       setEmail('')
       setMot_de_passe('')
+      const decodedToken = jwtDecode(accessToken);
+      console.log("decoded token", decodedToken);
       //navigate('')
+
+      // Get the user's role from the decoded token
+      const { role } = decodedToken.UserInfo;
+      console.log("role : ", role);
+      let id = role ;
+      const roleResponse = await axios.get(`http://localhost:5000/role/${id}`);
+      if (!roleResponse) {
+        throw new Error('Failed to fetch role details');
+      }
+      console.log("roleResponse", roleResponse);
+      /*const roleData = await roleResponse.json();*/
+
+      // Get the name of the role from the response
+      const roleName = roleResponse.data.nom;
+      console.log("role Name", roleName);
+      id = decodedToken.UserInfo.id;
+      console.log("id", id);
+
+      if (roleName === 'admin') {
+        navigate('/hr/demandes'); // Redirect to admin dashboard
+      } else if (roleName === 'employé') {
+        navigate(`/employee/demandes/${id}`); // Redirect to employee dashboard
+      } else {
+        navigate(`/chef_depart/demandes/${id}`) // Redirect to a default route
+      }
       
     } catch (error) {
       console.log(error);
