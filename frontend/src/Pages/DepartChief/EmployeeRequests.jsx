@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import BackButton from '../../components/BackButton';
 import Spinner from '../../components/Spinner';
 import DCModalCard from './DCModelCard';
+import { jwtDecode } from "jwt-decode";
 
 const EmployeeRequests = () => {
 
@@ -12,7 +13,10 @@ const EmployeeRequests = () => {
     const [filterType, setFilterType] = useState(""); 
     const [filterStatus, setFilterStatus] = useState(""); // New state for filtering by status
     const [filterDate, setFilterDate] = useState(false); 
-    const { id } = useParams();
+
+    const token = localStorage.getItem("accessToken")
+    const decodedToken = jwtDecode(token);
+    const id = decodedToken.UserInfo.id ;
 
     useEffect(() => {
         setLoading(true);

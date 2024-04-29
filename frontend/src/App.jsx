@@ -91,8 +91,8 @@ const App = () => {
 
               {/*employee preserved routes */}
               {((role==="employé")||(role==="depChief"))&&(<>
-                <Route exact path="/employee/demandes/:id" element={<EmployeeRequests />} />
-                <Route exact path="/employee/modifier-mot-de-passe/:id" element={<UpdatePassword />} />
+                <Route exact path="/employee/demandes" element={<EmployeeRequests />} />
+                <Route exact path="/employee/modifier-mot-de-passe" element={<UpdatePassword />} />
                 <Route exact path="/leave/:department/:id" element={<LeaveRequest />} />
                 <Route exact path="/avance/:department/:id/:fonction" element={<AvanceRequest />} />
                 <Route exact path="/refund/:department/:id/:fonction" element={<RefundRequest />} />

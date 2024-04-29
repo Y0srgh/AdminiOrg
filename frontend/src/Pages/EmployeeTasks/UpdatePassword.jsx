@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import { SnackbarProvider, useSnackbar } from "notistack";
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 
 const UpdatePassword = () => {
     const [formData, setFormData] = useState({
@@ -18,7 +19,10 @@ const UpdatePassword = () => {
         });
     };
     
-    const { id } = useParams();
+    //const { id } = useParams();
+    const token = localStorage.getItem("accessToken")
+    const decodedToken = jwtDecode(token);
+    const id = decodedToken.UserInfo.id ;
     const { enqueueSnackbar } = useSnackbar();
     const navigate = useNavigate();
 
