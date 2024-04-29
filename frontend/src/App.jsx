@@ -39,8 +39,27 @@ import DCShowRequests from "./Pages/DepartChief/DCShowRequests";
 import HRDisplayInvalidRequests from "./Pages/DepartChief/HRDisplayInvalidRequests";
 import EmployeeRequests from "./Pages/DepartChief/EmployeeRequests";
 import UnAuth from "./components/home/unAuth";
+import { isAccessTokenExpired, refreshAccessToken } from "./utils/authUtils.js";
 import { jwtDecode } from "jwt-decode";
 const App = () => {
+  /*const token = localStorage.getItem('accessToken');
+  const role = localStorage.getItem('userRole');
+  if (token) {
+    console.log(token);
+    console.log(token);
+    const decodedToken = jwtDecode(token);
+    console.log(decodedToken);
+    console.log("tokeeen", token);
+  }*/
+
+
+  const accessTokenExpired = isAccessTokenExpired();
+
+  if (accessTokenExpired) {
+    // Refresh the access token
+    refreshAccessToken();
+  }
+
   const token = localStorage.getItem('accessToken');
   const role = localStorage.getItem('userRole');
   if (token) {
@@ -61,7 +80,7 @@ const App = () => {
             {token && (<>
 
               {/**admin preserved routes */}
-              {role==="admin"&&(<>
+              {role === "admin" && (<>
                 <Route exact path="/role" element={<HomeRole />} />
                 <Route exact path="/role/ajouter-role" element={<CreateRole />} />
                 <Route exact path="/role/modifier-role/:id" element={<EditRole />} />
@@ -85,12 +104,12 @@ const App = () => {
                 <Route exact path="/employee/ajouter-employee" element={<CreateEmployee />} />
                 <Route exact path="/employee/effacer-employee/:id" element={<DeleteEmployee />} />
                 <Route exact path="/employee/detail-employee/:id" element={<ShowEmployee />} />
-              <Route exact path="/hr/demandes" element={<HRDisplayInvalidRequests />} />
-              </>)||<Route path="/*" element={<UnAuth/>}/>}
+                <Route exact path="/hr/demandes" element={<HRDisplayInvalidRequests />} />
+              </>) || <Route path="/*" element={<UnAuth />} />}
               {/*end of admin preserved routes */}
 
               {/*employee preserved routes */}
-              {((role==="employé")||(role==="depChief"))&&(<>
+              {((role === "employé") || (role === "depChief")) && (<>
                 <Route exact path="/employee/demandes" element={<EmployeeRequests />} />
                 <Route exact path="/employee/modifier-mot-de-passe" element={<UpdatePassword />} />
                 <Route exact path="/leave/:department/:id" element={<LeaveRequest />} />
@@ -98,10 +117,10 @@ const App = () => {
                 <Route exact path="/refund/:department/:id/:fonction" element={<RefundRequest />} />
                 <Route exact path="/fiche_paie/:department/:id" element={<FichePaieRequest />} />
                 <Route exact path="/attestationDeTravail/:department/:id" element={<AttestationRequest />} />
-              </>)||<Route path="/*" element={<UnAuth/>}/>}
+              </>) || <Route path="/*" element={<UnAuth />} />}
               {/*end employee preserved routes */}
 
-              {(role==="depChief")&&(<Route exact path="/chef_depart/demandes/:id" element={<DisplayInvalidRequests />} />)||<Route path="/*" element={<UnAuth/>}/>}
+              {(role === "depChief") && (<Route exact path="/chef_depart/demandes/:id" element={<DisplayInvalidRequests />} />) || <Route path="/*" element={<UnAuth />} />}
 
               <Route exact path="/demandes/demande-details/:id" element={<DCShowRequests />} />
             </>) || <Route path="/*" element={<LoginFrom />} />}

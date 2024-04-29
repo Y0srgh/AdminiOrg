@@ -316,21 +316,22 @@ export const authEmployee = async (req, res) => {
         }
       },
       ACCESS_TOKEN_SECRET,
-      { expiresIn: '1m' }
+      { expiresIn: '20' }
     );
 
     const refreshToken = jwt.sign(
       { "id": employee._id,
       "email": employee.email },
       REFRESH_TOKEN_SECRET,
-      { expiresIn: '1d' }
+      { expiresIn: '1m' }
     );
 
     res.cookie('jwt', refreshToken, {
       httpOnly: true, //accessible only by web server
       secure: true, //https
       sameSite: 'None', //cross-site cookie
-      maxAge: 7 * 24 * 60 * 60 * 1000 //cookie expiry
+      //maxAge: 7 * 24 * 60 * 60 * 1000 //cookie expiry
+      maxAge: 60 * 1000 //cookie expiry
     })
 
     res.status(200).json({ accessToken })
@@ -367,7 +368,7 @@ export const refresh = (req, res) => {
           }
         },
         ACCESS_TOKEN_SECRET,
-        { expiresIn: '1m' }
+        { expiresIn: '20s' }
       );
 
       res.status(201).json({accessToken});
