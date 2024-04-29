@@ -30,8 +30,10 @@ const LoginFrom = () => {
         console.log("role mel login",role.data.nom);
         
         const { accessToken } = response.data;
+        console.log("helooooooooooooooooooo",response.data);
         localStorage.setItem('accessToken', accessToken); // Store the access token in local storage
-        localStorage.setItem('userRole',role.data.nom)
+        localStorage.setItem('userRole',role.data.nom);
+        localStorage.setItem('refreshToken',response.data.refreshToken);
         console.log("acceeeess token",decodedToken);
         enqueueSnackbar('Logged in successfully!', { variant: 'success' });
       

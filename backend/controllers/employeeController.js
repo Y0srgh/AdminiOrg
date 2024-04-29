@@ -320,21 +320,49 @@ export const authEmployee = async (req, res) => {
     );
 
     const refreshToken = jwt.sign(
-      { "id": employee._id,
-      "email": employee.email },
+      {
+        "id": employee._id,
+        "email": employee.email
+      },
       REFRESH_TOKEN_SECRET,
-      { expiresIn: '1m' }
+      { expiresIn: '5m' }
     );
 
-    res.cookie('jwt', refreshToken, {
+    /*res.cookie('jwt', refreshToken, {
       httpOnly: true, //accessible only by web server
-      secure: true, //https
+      secure: false, //https
       sameSite: 'None', //cross-site cookie
       //maxAge: 7 * 24 * 60 * 60 * 1000 //cookie expiry
-      maxAge: 60 * 1000 //cookie expiry
-    })
+      maxAge: 60 * 2000, //cookie expiry
+      //path: '/employee/auth/refresh',
+    })*/
 
-    res.status(200).json({ accessToken })
+    /*res.cookie('jwt', refreshToken, {
+      httpOnly: true,
+      origin: "http://localhost:5173",
+      //secure: false,
+      sameSite: 'none',
+      maxAge: 60 * 30000000,
+    });*/
+
+    /**
+     * res
+                  .cookie("token", token, {
+                    origin: "http://...firstOrigin..."
+                    expires: // set desired expiration here
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: "none",
+                  })
+                  .cookie("checkToken", true, {
+                    origin: "http://...firstOrigin..."
+                    expires: // same as above
+                    secure: true,
+                    sameSite: "none",
+                  })
+     */
+
+    res.status(200).json({ accessToken, refreshToken })
 
   } catch (error) {
     console.log(error);
@@ -343,46 +371,72 @@ export const authEmployee = async (req, res) => {
 };
 
 export const refresh = (req, res) => {
-  const cookies = req.cookies;
-  if (!cookies?.jwt) return res.status(401).json({ message: 'Unauthorized 1' });
+  //const cookies = req.cookies;
+  console.log("log mel refresh el headers", req.headers.jwt);
+  //console.log("Cookies:", cookies);
+  if (!req.headers?.jwt) return res.status(401).json({ message: 'Unauthorized 1' });
+  const refreshToken = req.headers.jwt
 
-  const refreshToken = cookies.jwt
+  try {
+    const decodedToken = jwt.verify(refreshToken, REFRESH_TOKEN_SECRET);
 
+    console.log("-----------",decodedToken);
+  
   jwt.verify(
     refreshToken,
     REFRESH_TOKEN_SECRET,
     asyncHandler(async (err, decoded) => {
       if (err) return res.status(403).json({ message: 'Foridden' })
-
       const foundUser = await Employee.findOne({ email: decoded.email })
-
       if (!foundUser) return res.status(401).json({ message: 'Unauthorized 2' })
-
-      const accessToken = jwt.sign(
-        {
-          "UserInfo": {
-            "id": foundUser._id,
-            "email": foundUser.email,
-            "role": foundUser.role,
-            "department": foundUser.departement,
-          }
-        },
+      const accessToken = jwt.sign({
+        "UserInfo": {
+          "id": foundUser._id,
+          "email": foundUser.email,
+          "role": foundUser.role,
+          "department": foundUser.departement,
+        }
+      },
         ACCESS_TOKEN_SECRET,
         { expiresIn: '20s' }
       );
-
-      res.status(201).json({accessToken});
-      
-    })
-
-  )
+      console.log("access token mel back",accessToken);
+      return res.status(201).json({ accessToken });
+    }))
+  } catch (error) {
+    console.log("lerreur menna");
+    return res.status(403).json({ message: 'Unauthorized 3',refreshToken:'',accessToken:'' });
+  }
 }
+
+/*export const refresh = (req, res) => {
+const cookies = req.cookies;
+console.log("log mel refresh el headers", req.headers);
+console.log("Cookies:", cookies);
+if (!cookies?.jwt) return res.status(401).json({ message: 'Unauthorized 1' });
+const refreshToken = cookies.jwt
+jwt.verify(
+refreshToken,
+REFRESH_TOKEN_SECRET,
+asyncHandler(async (err, decoded) => {if (err) return res.status(403).json({ message: 'Foridden' })
+const foundUser = await Employee.findOne({ email: decoded.email })
+if (!foundUser) return res.status(401).json({ message: 'Unauthorized 2' })
+const accessToken = jwt.sign({"UserInfo": {
+"id": foundUser._id,
+"email": foundUser.email,
+"role": foundUser.role,
+"department": foundUser.departement,}},
+ACCESS_TOKEN_SECRET,
+{ expiresIn: '20s' }
+);
+res.status(201).json({ accessToken });
+}))}*/
 
 export const logout = (req, res) => {
   const cookies = req.cookies;
-  if(!cookies?.jwt) return res.sendStatus(204)
-  res.clearCookie('jwt', {httpOnly: true, sameSite: 'None', secure: true})
-  res.status(201).json({message: 'Cookie cleared'})
+  if (!cookies?.jwt) return res.sendStatus(204)
+  res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: false })
+  res.status(201).json({ message: 'Cookie cleared' })
 }
 
 /*

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { SnackbarProvider, useSnackbar } from "notistack";
 import "./App.css";
@@ -39,6 +39,7 @@ import DCShowRequests from "./Pages/DepartChief/DCShowRequests";
 import HRDisplayInvalidRequests from "./Pages/DepartChief/HRDisplayInvalidRequests";
 import EmployeeRequests from "./Pages/DepartChief/EmployeeRequests";
 import UnAuth from "./components/home/unAuth";
+import axios from "axios";
 import { isAccessTokenExpired, refreshAccessToken } from "./utils/authUtils.js";
 import { jwtDecode } from "jwt-decode";
 const App = () => {
@@ -50,26 +51,93 @@ const App = () => {
     const decodedToken = jwtDecode(token);
     console.log(decodedToken);
     console.log("tokeeen", token);
-  }*/
-
-
-  const accessTokenExpired = isAccessTokenExpired();
-
-  if (accessTokenExpired) {
-    // Refresh the access token
-    refreshAccessToken();
   }
+*/
 
+  /*useEffect(()=>{
+    const fetchRefresh = async ()=>{
+      
+        
+        await axios.post('http://localhost:5000/employee/auth/refresh',{
+        credentials: "include", // Include cookies
+        headers: {
+          "Content-Type": "application/json",
+          "jwt":localStorage.getItem('refreshToken')
+        }}).then((res)=>console.log(res))
+      .catch( (error)=> {
+        console.error("error mel app", error);
+      })
+    }
+    fetchRefresh();
+  },[])*/
+  //const [token,setAccessToken] = useState("");
+
+  useEffect(() => {
+    const fetchRefresh = async () => {
+      
+      try {
+        
+      
+        const response = await axios.get('http://localhost:5000/employee/auth/refresh',
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              "jwt":localStorage.getItem('refreshToken'),
+            },
+          }
+        ).then((resp)=>{
+          //setAccessToken(resp.accessToken)
+          localStorage.setItem('accessToken',resp.data.accessToken);
+          console.log('------------------',resp);
+        }).catch((error)=>{
+          console.log(error);
+          
+          localStorage.setItem('accessToken','');
+          localStorage.setItem('refreshToken','');
+          //window.location='/login'
+        })
+      } catch (error) {
+        //console.log(error);
+      }
+  
+        //console.log('New access token:', response);
+        /*if (response.status.startsWith("4")) {
+          console.log('New access token:', response.data.accessToken);
+        }*/
+        
+      /*} catch (error) {
+        localStorage.setItem('accessToken','');
+        localStorage.setItem('refreshToken','');
+        //console.error('Error refreshing token:', error);
+      }*/
+    };
+  
+    fetchRefresh();
+  }, []);
+  
+
+  //const accessTokenExpired = isAccessTokenExpired();
+
+  //if (accessTokenExpired) {
+    // Refresh the access token
+    //refreshAccessToken();
+  //}
+
+  //const token = localStorage.getItem('accessToken');
+  const refresh = localStorage.getItem('refreshToken');
+  refresh&&console.log(refresh);
+  //setAccessToken(localStorage.getItem('accessToken'))
   const token = localStorage.getItem('accessToken');
-  const role = localStorage.getItem('userRole');
   if (token) {
+    console.log("tokeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeen",localStorage.getItem('accessToken'));
+    var role = localStorage.getItem('userRole');
     console.log(token);
     console.log(token);
-    const decodedToken = jwtDecode(token);
-    console.log(decodedToken);
+    //const decodedToken = jwtDecode(localStorage.getItem('accessToken'));
+    //console.log(decodedToken);
     console.log("tokeeen", token);
   }
-
+  
   return (
     <SnackbarProvider>
       <div>

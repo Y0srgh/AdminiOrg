@@ -1,12 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import BackButton from '../../components/BackButton';
 import Spinner from '../../components/Spinner';
 import DCModalCard from './DCModelCard';
 import { jwtDecode } from "jwt-decode";
 
 const EmployeeRequests = () => {
+    /*try {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+        const decodedData = jwtDecode(storedToken, { header: true });
+        const expirationDate = decodedData.exp;
+        const current_time = Date.now() / 1000;
+        if (expirationDate < current_time) {
+            localStorage.removeItem("token");
+        }
+    }
+} catch (e) {
+    console.error("Error decoding token:", e);
+    localStorage.clear();
+}
+*/
 
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -14,9 +29,17 @@ const EmployeeRequests = () => {
     const [filterStatus, setFilterStatus] = useState(""); // New state for filtering by status
     const [filterDate, setFilterDate] = useState(false); 
 
-    const token = localStorage.getItem("accessToken")
-    const decodedToken = jwtDecode(token);
-    const id = decodedToken.UserInfo.id ;
+    try {
+        const token = localStorage.getItem("accessToken")
+        if(token){
+        const decodedToken = jwtDecode(token)
+        var id = decodedToken?.UserInfo?.id || "" ;
+        }
+    } catch (error) {
+        //console.error("Error decoding token:", error);
+        //localStorage.clear();
+        console.log("l erreure menna");
+    }
 
     useEffect(() => {
         setLoading(true);
@@ -43,6 +66,7 @@ const EmployeeRequests = () => {
             .catch((error) => {
                 console.log(error);
                 setLoading(false);
+                Navigate("/login");
             });
     }, [filterType, filterStatus, filterDate]); 
 

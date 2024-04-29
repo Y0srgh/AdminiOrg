@@ -23,8 +23,9 @@ router.put("/update-password/:id", updatePassword);
 router.put("/update-details/:id", updateEmployee);
 router.delete("/:id", deleteEmployee);
 
-router.route('/auth/refresh')
-    .get(refresh)
+//router.route('/auth/refresh').get(refresh)
+
+router.get("/auth/refresh",refresh);
 router.route('/auth/logout')
     .post(logout)
 export default router;

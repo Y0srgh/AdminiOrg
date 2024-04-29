@@ -1,48 +1,41 @@
-// src/utils/authUtils.js
 import { jwtDecode } from "jwt-decode";
 import axios from 'axios';
 
 // Check if access token is expired
 export const isAccessTokenExpired = () => {
     const accessToken = localStorage.getItem('accessToken');
-    //const decoded = jwt.decode(accessToken);
-    /* const decoded = jwtDecode(accessToken);
-     return Date.now() >= decoded.exp * 1000;*/
     if (accessToken) {
         const decoded = jwtDecode(accessToken);
         return Date.now() >= decoded.exp * 1000;
     } else {
-        return false
+        return false;
     }
 };
 
 // Refresh access token using refresh token
-// Refresh access token using refresh token
 export const refreshAccessToken = async () => {
-    const accessToken = localStorage.getItem('accessToken');
     try {
-        //const response = await fetch('http://localhost:5000/employee/auth/refresh', {
-          //  method: 'GET',
-            /*headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ accessToken }),*/
-        //});
+        const accessToken = localStorage.getItem('accessToken');
+        if (!accessToken) {
+            throw new Error('Access token not found');
+        }
 
-        const response = await axios.get('http://localhost:5000/employee/auth/refresh')
+        const response = await axios.get('http://localhost:5000/employee/auth/refresh', {
+            withCredentials: true
+        });
 
-        console.log("response mel auth", response);
-
+        // If refresh is successful, update the access token in local storage
         if (response.status === 201) {
-            const data = await response.json();
+            const data = response.data;
             localStorage.setItem('accessToken', data.accessToken);
-            localStorage.setItem('userRole', role.data.nom)
-
+            // You may also want to update other relevant data from the response
         } else {
-            // Remove the access token from local storage
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('userRole');
+            // If refresh failed, handle the error accordingly
+            throw new Error('Token refresh failed');
         }
     } catch (error) {
         console.error('Token refresh failed', error);
+        // Rethrow the error to be caught by the caller if needed
+        throw error;
     }
 };
-
