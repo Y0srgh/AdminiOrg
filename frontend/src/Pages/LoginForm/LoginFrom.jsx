@@ -22,11 +22,16 @@ const LoginFrom = () => {
   
       // Sending login request to backend
       const response = await axios.post('http://localhost:5000/employee/auth', data);
-      console.log(response);
       // If login is successful, navigate to the dashboard or any other desired page
       if (response.status === 200) {
+        const decodedToken = jwtDecode(response.data.accessToken);
+        console.log("hello",decodedToken.UserInfo.role);
+        const role = await axios.get(`http://localhost:5000/role/${decodedToken.UserInfo.role}`);
+        console.log("role mel login",role.data.nom);
+        
         const { accessToken } = response.data;
         localStorage.setItem('accessToken', accessToken); // Store the access token in local storage
+        localStorage.setItem('userRole',role.data.nom)
         enqueueSnackbar('Logged in successfully!', { variant: 'success' });
       }/*
       
