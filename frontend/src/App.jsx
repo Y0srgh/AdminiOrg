@@ -40,6 +40,7 @@ import HRDisplayInvalidRequests from "./Pages/DepartChief/HRDisplayInvalidReques
 import EmployeeRequests from "./Pages/DepartChief/EmployeeRequests";
 import UnAuth from "./components/home/unAuth";
 import axios from "axios";
+import SideBar from "./components/home/SideBar.jsx";
 import { isAccessTokenExpired, refreshAccessToken } from "./utils/authUtils.js";
 import { jwtDecode } from "jwt-decode";
 const App = () => {
@@ -140,13 +141,14 @@ const App = () => {
   
   return (
     <SnackbarProvider>
-      <div>
+      <div className="flex h-screen">
         <BrowserRouter>
+          {token &&<SideBar />}
+          <div className="flex-1">
           <Routes>
             <Route exact path="/login" element={<LoginFrom />} />
 
             {token && (<>
-
               {/**admin preserved routes */}
               {role === "admin" && (<>
                 <Route exact path="/role" element={<HomeRole />} />
@@ -194,6 +196,7 @@ const App = () => {
             </>) || <Route path="/*" element={<LoginFrom />} />}
 
           </Routes>
+          </div>
         </BrowserRouter>
       </div>
     </SnackbarProvider>
