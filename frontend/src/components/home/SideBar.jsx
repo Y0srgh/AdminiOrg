@@ -4,7 +4,7 @@ import { FaUserAlt, FaCog, FaBuilding, FaUserFriends, FaTasks, FaClipboardList, 
 
 const Sidebar = () => {
   return (
-    <div className="bg-gray-800 text-white h-full w-50 flex-none flex flex-col">
+    <div className=" sidebar bg-gray-800 text-white h-full w-49 flex-none flex flex-col top-0 left-0">
       <div className="p-12 "> {/* Sidebar header */}
         <h2 className="text-xl font-bold">AdminiOrga</h2>
       </div>

@@ -43,7 +43,7 @@ const EmployeeRequests = () => {
 
     useEffect(() => {
         setLoading(true);
-        localStorage.setItem("role", "employee");
+        //localStorage.setItem("userRole", "employé");
         axios
             .get(`http://localhost:5000/requests/employee/${id}`)
             .then((response) => {

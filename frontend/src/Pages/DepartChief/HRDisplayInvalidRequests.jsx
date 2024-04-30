@@ -18,7 +18,7 @@ const HRDisplayInvalidRequests = () => {
 
     useEffect(() => {
         setLoading(true);
-        localStorage.setItem("role","hr")
+        //localStorage.setItem("userRole","admin")
         axios
             .get(`http://localhost:5000/requests`)
             .then((response) => {

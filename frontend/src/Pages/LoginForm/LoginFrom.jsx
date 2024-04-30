@@ -33,18 +33,19 @@ const LoginFrom = () => {
         console.log("helooooooooooooooooooo",response.data);
         localStorage.setItem('accessToken', accessToken); // Store the access token in local storage
         localStorage.setItem('userRole',role.data.nom);
+        console.log(localStorage.getItem('userRole'));
         localStorage.setItem('refreshToken',response.data.refreshToken);
         console.log("acceeeess token",decodedToken);
         enqueueSnackbar('Logged in successfully!', { variant: 'success' });
       
       if(role.data.nom==="admin")
-      navigate('/hr/demandes'); // Navigate to the dashboard or any other desired page
+      window.location.href ='/hr/demandes'; // Navigate to the dashboard or any other desired page
     
       if(role.data.nom==="employé")
-      navigate("/employee/demandes"); // Navigate to the dashboard or any other desired page
+      window.location.href ="/employee/demandes"; // Navigate to the dashboard or any other desired page
     
       if(role.data.nom==="depChief")
-      navigate(`/chef_depart/demandes/${decodedToken.UserInfo.id}`); // Navigate to the dashboard or any other desired page
+      window.location.href =`/chef_depart/demandes/${decodedToken.UserInfo.id}`; // Navigate to the dashboard or any other desired page
     }
     } catch (error) {
       // If there's an error, show an error message

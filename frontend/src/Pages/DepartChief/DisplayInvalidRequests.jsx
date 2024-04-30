@@ -12,7 +12,7 @@ const DisplayInvalidRequests = () => {
 
     useEffect(() => {
         setLoading(true);
-        localStorage.setItem("role","chef")
+        //localStorage.setItem("userRole","depChief")
         axios
             .get(`http://localhost:5000/requests`)
             .then((response) => {

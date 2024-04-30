@@ -134,8 +134,8 @@ const App = () => {
     var role = localStorage.getItem('userRole');
     console.log(token);
     console.log(token);
-    //const decodedToken = jwtDecode(localStorage.getItem('accessToken'));
-    //console.log(decodedToken);
+    const decodedToken = jwtDecode(localStorage.getItem('accessToken'));
+    console.log("the decoded --------",decodedToken);
     console.log("tokeeen", token);
   }
   
@@ -143,8 +143,8 @@ const App = () => {
     <SnackbarProvider>
       <div className="flex h-screen">
         <BrowserRouter>
-          {token &&<SideBar />}
-          <div className="flex-1">
+          {(token&& location.pathname !== '/login') &&<SideBar />}
+          <div className="flex-1 pl-50 overflow-y-auto">
           <Routes>
             <Route exact path="/login" element={<LoginFrom />} />
 
