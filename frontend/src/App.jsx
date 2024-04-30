@@ -3,7 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { SnackbarProvider, useSnackbar } from "notistack";
 import "./App.css";
 import LoginFrom from "./Pages/LoginForm/LoginFrom";
-
+import Logout from "./components/home/Logout.jsx";
 import CreateRole from "./Pages/AdminTasks/RoleBased/CreateRole";
 import EditRole from "./Pages/AdminTasks/RoleBased/EditRole";
 import DeleteRole from "./Pages/AdminTasks/RoleBased/DeleteRole";
@@ -194,7 +194,7 @@ const App = () => {
 
               <Route exact path="/demandes/demande-details/:id" element={<DCShowRequests />} />
             </>) || <Route path="/*" element={<LoginFrom />} />}
-
+              <Route exact path="/logout" element={<Logout/>}/>
           </Routes>
           </div>
         </BrowserRouter>
