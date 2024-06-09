@@ -14,7 +14,7 @@ const HomeEmployee = () => {
     useEffect(() => {
         setLoading(true);
         axios
-          .get('http://localhost:5000/employee')
+          .get('http://localhost:5500/employee')
           .then((response) => {
             console.log("reponse home emp: ",response.data);
             setemployees(response.data.data);

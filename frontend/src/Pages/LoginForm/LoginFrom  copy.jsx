@@ -44,7 +44,7 @@ const LoginFrom = () => {
       const { role } = decodedToken.UserInfo;
       console.log("role : ", role);
       let id = role ;
-      const roleResponse = await axios.get(`http://localhost:5000/role/${id}`);
+      const roleResponse = await axios.get(`http://localhost:5500/role/${id}`);
       if (!roleResponse) {
         throw new Error('Failed to fetch role details');
       }

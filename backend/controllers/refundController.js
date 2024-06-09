@@ -17,20 +17,20 @@ router.post('/', upload.single('file'), async (req, res) => {
   try {
 
     const { employee, department, fonction, nom, prenom } = req.body;
-    console.log(req.body);
+    console.log("------",req.body);
     // Vérifier que tous les champs sont fournis
     if (!employee || !department || !fonction || !nom || !prenom) {
-      return res.status(400).json({ message: "Veuillez fournir tous les champs." });
+      return res.status(401).json({ message: "Veuillez fournir tous les champs." });
     }
 
     // Check if file field exists in request
     if (!req.file) {
-      return res.status(400).json({ message: "File not provided." });
+      return res.status(401).json({ message: "File not provided." });
     }
 
-    console.log(req.file);
+    console.log("----file ----",req.file);
     // Retrieve file name from multer
-    const file = req.file.originalname
+    const file = req.file.filename
 
     console.log("employee, department, fonction, nom, prenom", employee, department, fonction, nom, prenom, file);
 
@@ -41,8 +41,8 @@ router.post('/', upload.single('file'), async (req, res) => {
 
     console.log(existingEmployee);
 
-    if ((existingEmployee.department && existingEmployee.department.toString() !== department) || existingEmployee.fonction !== fonction || existingEmployee.nom !== nom || existingEmployee.prenom !== prenom) {
-      return res.status(400).json({ message: "Employé non trouvé." });
+    if (!existingEmployee) {
+      return res.status(401).json({ message: "Employé non trouvé." });
     }
 
     // Créer la demande de remboursement

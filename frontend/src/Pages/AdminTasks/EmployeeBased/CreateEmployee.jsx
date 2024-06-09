@@ -24,9 +24,9 @@ const AddEmployee = () => {
     const fetchData = async () => {
       try {
         const [roleResponse, fonctionResponse, departementResponse] = await Promise.all([
-          axios.get("http://localhost:5000/role"),
-          axios.get("http://localhost:5000/function"),
-          axios.get("http://localhost:5000/department")
+          axios.get("http://localhost:5500/role"),
+          axios.get("http://localhost:5500/function"),
+          axios.get("http://localhost:5500/department")
         ]);
         setRoles(roleResponse.data);
         setFonctions(fonctionResponse.data);
@@ -55,7 +55,7 @@ const AddEmployee = () => {
     };
 
     try {
-      await axios.post("http://localhost:5000/employee", data);
+      await axios.post("http://localhost:5500/employee", data);
       enqueueSnackbar("L'employé a été ajouté avec succès", {
         variant: "success",
       });
@@ -63,6 +63,7 @@ const AddEmployee = () => {
     } catch (error) {
       enqueueSnackbar(error.response.data.message, { variant: "error" });
       console.log(error);
+      navigate("/employee");
     }
   };
 
@@ -184,7 +185,7 @@ const AddEmployee = () => {
             type="submit"
             className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors"
           >
-            S'inscrire
+            Ajouter
           </button>
         </form>
       </div>

@@ -16,19 +16,21 @@ const DCShowRequests = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { enqueueSnackbar } = useSnackbar();
-    const [previousRoute, setPreviousRoute] = useState("");
+    //const [previousRoute, setPreviousRoute] = useState("");
     console.log("id mel show", id);
+
+    const previousRoute = localStorage.userRole;
 
     useEffect(() => {
         setLoading(true);
         const role = localStorage.getItem("role");
-        axios.get(`http://localhost:5000/requests/${id}`)
+        axios.get(`http://localhost:5500/requests/${id}`)
             .then((response) => {
                 console.log("reponse mtaa req id", response.data);
                 console.log("Route précédente:", role);
-                setPreviousRoute(role)
+                //setPreviousRoute(role)
                 setRequest(response.data);
-                axios.get(`http://localhost:5000/department/${response.data.department}`)
+                axios.get(`http://localhost:5500/department/${response.data.department}`)
                     .then((departmentResponse) => {
                         setDepartmentName(departmentResponse.data.nom);
                     })
@@ -36,7 +38,7 @@ const DCShowRequests = () => {
                         console.error("Error fetching department:", error);
                     });
 
-                response.data.type === "Congé" && (axios.get(`http://localhost:5000/employee/${response.data.remplaçant}`)
+                response.data.type === "Congé" && (axios.get(`http://localhost:5500/employee/${response.data.remplaçant}`)
                     .then((remplacantResponse) => {
                         console.log("remplaçant",);
                         setRemplacant(remplacantResponse.data.prenom + " " + remplacantResponse.data.nom);
@@ -46,7 +48,7 @@ const DCShowRequests = () => {
                     }));
 
                 response.data.fonction && (
-                    axios.get(`http://localhost:5000/function/${response.data.fonction}`)
+                    axios.get(`http://localhost:5500/function/${response.data.fonction}`)
                         .then((functionResponse) => {
                             setFunctionName(functionResponse.data.nom);
                         })
@@ -66,11 +68,11 @@ const DCShowRequests = () => {
         e.preventDefault();
         const data = {
             etat: "Refusée",
-            previous: previousRoute,
+            //previous: previousRoute,
         }
 
         axios
-            .put(`http://localhost:5000/requests/${id}`, data)
+            .put(`http://localhost:5500/requests/${id}`, data)
             .then((response) => {
                 console.log("response : ", response);
                 setLoading(false);
@@ -91,11 +93,11 @@ const DCShowRequests = () => {
         e.preventDefault();
         const data = {
             etat: "Approuvée",
-            previous: previousRoute,
+            //previous: previousRoute,
         }
 
         axios
-            .put(`http://localhost:5000/requests/${id}`, data)
+            .put(`http://localhost:5500/requests/${id}`, data)
             .then((response) => {
                 console.log("response : ", response);
                 setLoading(false);
@@ -120,11 +122,11 @@ const DCShowRequests = () => {
         }
 
         axios
-            .put(`http://localhost:5000/requests/${id}`, data)
+            .put(`http://localhost:5500/requests/${id}`, data)
             .then((response) => {
                 console.log("response : ", response);
                 setLoading(false);
-                enqueueSnackbar("Le demande a été approuvée aveec succès avec succès", {
+                enqueueSnackbar("Le demande a été annulée aveec succès avec succès", {
                     variant: "success",
                 });
                 navigate(-1); // Utilisation de la méthode goBack()
@@ -235,11 +237,11 @@ const DCShowRequests = () => {
                     {request.type === "Remboursement" && (
                         <div className="my-4">
                             <span className="text-xl mr-4 text-gray-500">Justification (PDF):</span>
-                            <iframe src={`http://localhost:5000/${request.documents[0]}`} width="700" height="400"></iframe>
+                            <iframe src={`http://localhost:5500/${request.documents}`} width="700" height="400"></iframe>
                         </div>
                     )}
 
-                    {(previousRoute && (previousRoute !== "employee")) && (<div className="flex">
+                    {(previousRoute && (((previousRoute === "admin")||(previousRoute === "depChief"))&&(request.status!=="Approuvée"))) && (<div className="flex">
                         <button
                             type="submit"
                             onClick={handleValidate}
@@ -257,7 +259,7 @@ const DCShowRequests = () => {
                     </div>
                     )}
 
-                    {(previousRoute && (previousRoute === "employee")&&(request.status==="En_attente")) && (<div className="flex">
+                    {(previousRoute && (previousRoute === "employé")&&(request.status==="En_attente")) && (<div className="flex">
                         <button
                             type="submit"
                             onClick={handleCancel}

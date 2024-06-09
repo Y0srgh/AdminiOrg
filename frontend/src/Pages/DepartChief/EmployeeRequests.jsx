@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Navigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import BackButton from '../../components/BackButton';
 import Spinner from '../../components/Spinner';
 import DCModalCard from './DCModelCard';
+import { MdOutlineAddBox } from 'react-icons/md';
 import { jwtDecode } from "jwt-decode";
 
 const EmployeeRequests = () => {
@@ -45,7 +46,7 @@ const EmployeeRequests = () => {
         setLoading(true);
         //localStorage.setItem("userRole", "employé");
         axios
-            .get(`http://localhost:5000/requests/employee/${id}`)
+            .get(`http://localhost:5500/requests/employee/${id}`)
             .then((response) => {
                 const filtered = response.data.data;
                 setRequests(filtered);
@@ -73,7 +74,10 @@ const EmployeeRequests = () => {
     return (
         <div className='p-4'>
             <div className='flex justify-between items-center'>
-                <h1 className='text-3xl my-8'>Liste des demandes non validées</h1>
+                <h1 className='text-3xl my-8'>Liste des demandes</h1>
+                <Link to='/add-request'>
+                    <MdOutlineAddBox className='text-sky-800 text-4xl' />
+                </Link>
                 <div className="flex space-x-4 items-center">
                     <select
                         className="border border-gray-300 rounded-md py-1 px-2"

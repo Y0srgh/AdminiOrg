@@ -8,4 +8,4 @@ export default mongoose
     })
     .catch((error)=>{
         console.log(error);
-    });
+    }); 

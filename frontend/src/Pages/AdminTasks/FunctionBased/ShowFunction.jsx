@@ -11,7 +11,7 @@ const ShowFunction = () => {
     useEffect(() => {
         setLoading(true);
         axios
-            .get(`http://localhost:5000/function/${id}`)
+            .get(`http://localhost:5500/function/${id}`)
             .then((response) => {
                 setFunction(response.data);
                 setLoading(false);

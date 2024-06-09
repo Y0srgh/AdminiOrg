@@ -19,7 +19,7 @@ const EditDepartment = () => {
         setLoading(true);
         const fetchEmployees = async () => {
             try {
-                const response = await axios.get("http://localhost:5000/employee");
+                const response = await axios.get("http://localhost:5500/employee");
                 console.log("reponse", response);
                 setEmployees(response.data);
             } catch (error) {
@@ -29,7 +29,7 @@ const EditDepartment = () => {
         fetchEmployees();
 
         axios
-            .get(`http://localhost:5000/department/${id}`)
+            .get(`http://localhost:5500/department/${id}`)
             .then((response) => {
                 console.log(response);
                 setDepartment(response.data.nom)
@@ -50,7 +50,7 @@ const EditDepartment = () => {
         };
         setLoading(true);
         axios
-            .put(`http://localhost:5000/department/${id}`, data)
+            .put(`http://localhost:5500/department/${id}`, data)
             .then((response) => {
                 console.log("response : ", response);
                 setLoading(false);

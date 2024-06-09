@@ -19,20 +19,21 @@ const CreateFunction = () => {
         }
         setLoading(true);
         await axios
-            .post("http://localhost:5000/function", data)
+            .post("http://localhost:5500/function", data)
             .then(() => {
                 setLoading(false);
 
                 enqueueSnackbar("Une nouvelle fonction a ete ajoutée avec succès", {
                     variant: "success",
                 });
-                //navigate("/");
+                navigate("/function");
                 setFunctionName("");
             })
             .catch((error) => {
                 setLoading(false);
                 enqueueSnackbar(error.response.data.message, { variant: "error" });
                 console.log(error);
+                navigate("/function");
             });
     }
 

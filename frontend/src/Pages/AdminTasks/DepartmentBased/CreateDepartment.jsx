@@ -17,7 +17,7 @@ const CreateDepartment = () => {
     useEffect(() => {
         const fetchEmployees = async () => {
             try {
-                const response = await axios.get("http://localhost:5000/employee");
+                const response = await axios.get("http://localhost:5500/employee");
                 console.log("reponse",response);
                 setEmployees(response.data);
             } catch (error) {
@@ -38,20 +38,21 @@ const CreateDepartment = () => {
         }
         setLoading(true);
         await axios
-            .post("http://localhost:5000/department", data)
+            .post("http://localhost:5500/department", data)
             .then(() => {
                 setLoading(false);
 
                 enqueueSnackbar("Un nouveau departement a été ajouté avec succès", {
                     variant: "success",
                 });
-                //navigate("/");
+                navigate("/department");
                 setDepartmentName("");
             })
             .catch((error) => {
                 setLoading(false);
                 enqueueSnackbar(error.response.data.message, { variant: "error" });
                 console.log(error);
+                navigate("/department");
             });
     }
 

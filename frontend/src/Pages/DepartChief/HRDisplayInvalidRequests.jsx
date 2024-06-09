@@ -14,13 +14,15 @@ const HRDisplayInvalidRequests = () => {
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(false);
     const [filterType, setFilterType] = useState(""); 
+    const [filterStatus, setFilterStatus] = useState(""); // New state for filtering by status
+
     const [filterDate, setFilterDate] = useState(false); 
 
     useEffect(() => {
         setLoading(true);
         //localStorage.setItem("userRole","admin")
         axios
-            .get(`http://localhost:5000/requests`)
+            .get(`http://localhost:5500/requests`)
             .then((response) => {
 
                 const filtered = response.data.data.filter(request => ((request.type === "Congé")&&((request.validationChef)&&(request.status!=="Refusée")))||((request.type === "Attestation")&&((request.validationChef)&&(request.status!=="Refusée")))||((request.type === "Avance")&&((request.validationChef)&&(request.status!=="Refusée")))||((request.type === "Remboursement")&&(!request.validationRH))||((request.type === "Fiche_Paie")&&(!request.validationRH)));
@@ -31,6 +33,9 @@ const HRDisplayInvalidRequests = () => {
                 if (filterType) {
                     filteredRequests = filteredRequests.filter(request => request.type === filterType);
                 }
+                if (filterStatus) {
+                  filteredRequests = filteredRequests.filter(request => request.status === filterStatus); // Filter by status
+              }
                 if (filterDate) {
                     filteredRequests = filteredRequests.sort((a, b) => new Date(b.date_creation) - new Date(a.date_creation));
                 }
@@ -41,12 +46,12 @@ const HRDisplayInvalidRequests = () => {
                 console.log(error);
                 setLoading(false);
             });
-    }, [filterType, filterDate]); 
+    }, [filterType, filterStatus, filterDate]); 
 
   return (
     <div className='p-4'>
       <div className='flex justify-between items-center'>
-        <h1 className='text-3xl my-8'>Liste des demandes non validées</h1>
+        <h1 className='text-3xl my-8'>Liste des demandes</h1>
         <div className="flex space-x-4 items-center">
           <select
             className="border border-gray-300 rounded-md py-1 px-2"
@@ -60,6 +65,18 @@ const HRDisplayInvalidRequests = () => {
             <option value="Remboursement">Remboursement</option>
             <option value="Fiche_Paie">Fiche de paie</option>
           </select>
+
+          <select
+                        className="border border-gray-300 rounded-md py-1 px-2"
+                        value={filterStatus}
+                        onChange={(e) => setFilterStatus(e.target.value)}
+                    >
+                        <option value="">Tous les états</option>
+                        <option value="En_attente">En attente</option>
+                        <option value="Annulée">Annulée</option>
+                        <option value="Approuvée">Approuvée</option>
+                        <option value="Refusée">Refusée</option>
+                    </select>
           <label className="flex items-center space-x-2">
             <input
               type="checkbox"

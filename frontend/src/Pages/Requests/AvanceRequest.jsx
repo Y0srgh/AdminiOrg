@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { SnackbarProvider, useSnackbar } from "notistack";
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { jwtDecode } from "jwt-decode";
 
 const AvanceRequest = () => {
     /**
@@ -20,7 +21,23 @@ const AvanceRequest = () => {
         prenom: '',
         montant: 0,
     });
-    const { id, department, fonction } = useParams();
+    //const { id, department, fonction } = useParams();
+    const token = localStorage.accessToken
+    console.log("hellooo",localStorage.accessToken);
+    try {
+        if(token){
+        const decodedToken = jwtDecode(token)
+        var id = decodedToken?.UserInfo?.id || "" ;
+        var department = decodedToken?.UserInfo?.department || "" ;
+        var fonction = decodedToken?.UserInfo?.fonction || "" ;
+        console.log("mel form mtaa conge",  decodedToken);
+        }
+    } catch (error) {
+        console.error("Error decoding token:", error);
+        //localStorage.clear();
+        console.log("l erreure menna");
+    }
+
     const { enqueueSnackbar } = useSnackbar();
 
     const handleChange = e => {
@@ -47,13 +64,15 @@ const AvanceRequest = () => {
         console.log(formData, "employee",id, "depart",department,"fonction", fonction);
 
         try {
-            await axios.post("http://localhost:5000/avance", requestData);
+            await axios.post("http://localhost:5500/avance", requestData);
             enqueueSnackbar("Votre demande a été enregistrée", {
                 variant: "success",
             });
+            window.location.href = "/employee/demandes";
         } catch (error) {
             enqueueSnackbar(error.response.data.message, { variant: "error" });
             console.error(error);
+            //window.location = "/employee/demandes";
         }
     };
 

@@ -20,7 +20,7 @@ export const refreshAccessToken = async () => {
             throw new Error('Access token not found');
         }
 
-        const response = await axios.get('http://localhost:5000/employee/auth/refresh', {
+        const response = await axios.get('http://localhost:5500/employee/auth/refresh', {
             withCredentials: true
         });
 

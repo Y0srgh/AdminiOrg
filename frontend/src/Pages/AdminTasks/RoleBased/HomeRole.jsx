@@ -14,7 +14,7 @@ const HomeRole = () => {
     useEffect(() => {
         setLoading(true);
         axios
-          .get('http://localhost:5000/role')
+          .get('http://localhost:5500/role')
           .then((response) => {
             console.log("reponse : ",response.data);
             setRoles(response.data);

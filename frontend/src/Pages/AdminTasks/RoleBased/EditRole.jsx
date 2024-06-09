@@ -16,7 +16,7 @@ const EditRole = () => {
     useEffect(() => {
         setLoading(true);
         axios
-            .get(`http://localhost:5000/role/${id}`)
+            .get(`http://localhost:5500/role/${id}`)
             .then((response) => {
                 console.log(response);
                 setRoleName(response.data.nom)
@@ -34,18 +34,22 @@ const EditRole = () => {
         };
         setLoading(true);
         axios
-            .put(`http://localhost:5000/role/${id}`, data)
+            .put(`http://localhost:5500/role/${id}`, data)
             .then(() => {
                 setLoading(false);
                 enqueueSnackbar("Le role a été modifié avec succes", {
                     variant: "success",
                 });
+                navigate("/role");
+
             })
             .catch((error) => {
                 setLoading(false);
                 // alert('An error happened. Please Chack console');
                 enqueueSnackbar(error.response.data.message, { variant: "error" });
                 console.log(error);
+                navigate("/role");
+
             });
     };
 

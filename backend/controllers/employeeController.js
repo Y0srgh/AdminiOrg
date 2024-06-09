@@ -60,6 +60,11 @@ export const addEmployee = async (req, res) => {
         .json({ message: "Un employé avec cet email existe déjà." });
     }
 
+    if (mot_de_passe) {
+      var hashedPassword = await bcrypt.hash(mot_de_passe, 10);
+      //updatedFields.mot_de_passe = hashedPassword;
+    }
+
     const newEmployee = await Employee.create({
       nom,
       prenom,
@@ -68,7 +73,7 @@ export const addEmployee = async (req, res) => {
       role,
       email,
       dateEmbauche,
-      mot_de_passe,
+      mot_de_passe :hashedPassword,
     });
 
     return res.status(201).json(newEmployee);
@@ -154,21 +159,27 @@ export const updatePassword = async (req, res) => {
   }
 };
 */
-
+/*
 export const updatePassword = async (req, res) => {
   try {
     const { id } = req.params;
     const { mot_de_passe, ancien_mot_de_passe } = req.body;
-    const employee = await Employee.findById(id);
+
+    console.log("el body", req.body);
+
+    const employee = await Employee.findById(id).select('+mot_de_passe');;
     if (!employee) {
       return res.status(404).json({ message: "Employé non trouvé." });
     }
 
+    
+
     if (ancien_mot_de_passe) {
-      const isPasswordCorrect = await bcrypt.compare(
-        ancien_mot_de_passe,
-        employee.mot_de_passe
-      );
+      console.log("memmi 1", ancien_mot_de_passe);
+      const oldPass = await bcrypt.hash(mot_de_passe, 10);
+      console.log("memmi",employee.mot_de_passe);
+      const isPasswordCorrect = await bcrypt.compare(employee.mot_de_passe,ancien_mot_de_passe);
+      console.log("hello",isPasswordCorrect);
       if (!isPasswordCorrect) {
         return res.status(400).json({ message: "Ancien mot de passe incorrect." });
       }
@@ -184,6 +195,46 @@ export const updatePassword = async (req, res) => {
     return res.status(500).json({ message: "Une erreur est survenue lors de la mise à jour du mot de passe." });
   }
 };
+*/
+
+
+
+export const updatePassword = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { mot_de_passe, ancien_mot_de_passe } = req.body;
+
+    console.log("Request body:", req.body);
+
+    const employee = await Employee.findById(id).select('+mot_de_passe');
+    if (!employee) {
+      return res.status(404).json({ message: "Employé non trouvé." });
+    }
+
+    if (!ancien_mot_de_passe) {
+      return res.status(400).json({ message: "Ancien mot de passe manquant." });
+    }
+
+    console.log("Hashed password from database:", employee);
+
+    const isPasswordCorrect = await bcrypt.compare(ancien_mot_de_passe.toString(),employee.mot_de_passe);
+    console.log("Is password correct?", isPasswordCorrect);
+    
+    if (!isPasswordCorrect) {
+      return res.status(400).json({ message: "Ancien mot de passe incorrect." });
+    }
+
+    const hashedNewPassword = await bcrypt.hash(mot_de_passe, 10);
+    employee.mot_de_passe = hashedNewPassword;
+    await employee.save();
+
+    return res.status(200).json({ message: "Mot de passe mis à jour avec succès." });
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour du mot de passe de l'employé :", error);
+    return res.status(500).json({ message: "Une erreur est survenue lors de la mise à jour du mot de passe." });
+  }
+};
+
 
 
 export const updateEmployee = async (req, res) => {
@@ -200,6 +251,7 @@ export const updateEmployee = async (req, res) => {
       dateEmbauche,
       solde_conge,
     } = req.body;
+    console.log(req.body);
 
     if (
       !nom ||
@@ -208,8 +260,7 @@ export const updateEmployee = async (req, res) => {
       !fonction ||
       !role ||
       !email ||
-      !dateEmbauche ||
-      !solde_conge
+      !dateEmbauche
     ) {
       return res.status(400).json({
         message:
@@ -287,7 +338,7 @@ export const authEmployee = async (req, res) => {
     const { email, mot_de_passe } = req.body;
 
     if (!email || !mot_de_passe) {
-      return res.status(400).json({ message: "Veuillez fournir tous les" })
+      return res.status(400).json({ message: "Veuillez fournir tous les champs" })
     }
 
     const employee = await Employee.findOne({ email }).select('+mot_de_passe');
@@ -313,10 +364,11 @@ export const authEmployee = async (req, res) => {
           "email": employee.email,
           "role": employee.role,
           "department": employee.departement,
+          "fonction":employee.fonction,
         }
       },
       ACCESS_TOKEN_SECRET,
-      { expiresIn: '20' }
+      { expiresIn: '10m' }
     );
 
     const refreshToken = jwt.sign(
@@ -325,7 +377,7 @@ export const authEmployee = async (req, res) => {
         "email": employee.email
       },
       REFRESH_TOKEN_SECRET,
-      { expiresIn: '5m' }
+      { expiresIn: '1d' }
     );
 
     /*res.cookie('jwt', refreshToken, {
@@ -395,10 +447,11 @@ export const refresh = (req, res) => {
           "email": foundUser.email,
           "role": foundUser.role,
           "department": foundUser.departement,
+          "fonction":foundUser.fonction,
         }
       },
         ACCESS_TOKEN_SECRET,
-        { expiresIn: '20s' }
+        { expiresIn: '10m' }
       );
       console.log("access token mel back",accessToken);
       return res.status(201).json({ accessToken });

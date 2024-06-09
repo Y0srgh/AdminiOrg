@@ -50,7 +50,7 @@ const employeeSchema = mongoose.Schema(
   }
 );
 
-employeeSchema.pre("save", async function (next) {
+/*employeeSchema.pre("save", async function (next) {
   const employee = this;
   if (employee.isModified("mot_de_passe")) {
     const hashedPassword = await bcrypt.hash(employee.mot_de_passe, 10);
@@ -59,7 +59,7 @@ employeeSchema.pre("save", async function (next) {
   next();
 });
 
-/*employeeSchema.methods.generateAuthToken = function () {
+employeeSchema.methods.generateAuthToken = function () {
   const token = jwt.sign({ _id: this._id }, process.env.JWTPRIVATEKEYRSA, {
     expiresIn: "7d",
     algorithm: "RS256" 

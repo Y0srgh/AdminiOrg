@@ -14,17 +14,18 @@ const DeleteFunction = () => {
   const handleDeleteFunction = () => {
     setLoading(true);
     axios
-      .delete(`http://localhost:5000/function/${id}`)
+      .delete(`http://localhost:5500/function/${id}`)
       .then(() => {
         setLoading(false);
         enqueueSnackbar('Le rôle a été effacé avec succès', { variant: 'success' });
-        //navigate('/');
+        navigate('/function');
       })
       .catch((error) => {
         setLoading(false);
         // alert('An error happened. Please Chack console');
         enqueueSnackbar('Error', { variant: 'error' });
         console.log(error);
+        navigate('/function');
       });
   };
   

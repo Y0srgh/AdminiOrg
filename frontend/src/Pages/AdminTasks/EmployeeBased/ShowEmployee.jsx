@@ -16,12 +16,12 @@ const ShowEmployee = () => {
         setLoading(true);
 
         // Fetch employee details from the backend
-        axios.get(`http://localhost:5000/employee/${id}`)
+        axios.get(`http://localhost:5500/employee/${id}`)
             .then((response) => {
                 console.log("show emp response", response);
                 setEmployee(response.data);
                 // Fetch department details
-                axios.get(`http://localhost:5000/department/${response.data.departement}`)
+                axios.get(`http://localhost:5500/department/${response.data.departement}`)
                     .then((departmentResponse) => {
                         setDepartmentName(departmentResponse.data.nom);
                     })
@@ -29,10 +29,17 @@ const ShowEmployee = () => {
                         console.error("Error fetching department:", error);
                     });
                 // Fetch function details
-                c
-                // Fetch role details
-                axios.get(`http://localhost:5000/role/${response.data.role}`)
+                axios.get(`http://localhost:5500/function/${response.data.fonction}`)
                     .then((roleResponse) => {
+                        setFunctionName(roleResponse.data.nom);
+                    })
+                    .catch((error) => {
+                        console.error("Error fetching role:", error);
+                    });
+                // Fetch role details
+                axios.get(`http://localhost:5500/role/${response.data.role}`)
+                    .then((roleResponse) => {
+                        console.log("el roooooooooooleeee",roleResponse);
                         setRoleName(roleResponse.data.nom);
                     })
                     .catch((error) => {

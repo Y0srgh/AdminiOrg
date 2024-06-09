@@ -14,7 +14,7 @@ const HomeDepartment = () => {
     useEffect(() => {
         setLoading(true);
         axios
-          .get('http://localhost:5000/department')
+          .get('http://localhost:5500/department')
           .then((response) => {
             console.log("reponse : ",response.data);
             setDepartments(response.data);
@@ -31,7 +31,7 @@ const HomeDepartment = () => {
     <div className='p-4'>
       <div className='flex justify-between items-center'>
         <h1 className='text-3xl my-8'>Liste des départements</h1>
-        <Link to='/role/ajouter-role'>
+        <Link to='/department/ajouter-department'>
           <MdOutlineAddBox className='text-sky-800 text-4xl' />
         </Link>
       </div>

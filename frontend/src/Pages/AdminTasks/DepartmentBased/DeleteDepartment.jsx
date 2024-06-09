@@ -14,7 +14,7 @@ const DeleteDepartment = () => {
   const handleDeleteDepartment = () => {
     setLoading(true);
     axios
-      .delete(`http://localhost:5000/department/${id}`)
+      .delete(`http://localhost:5500/department/${id}`)
       .then(() => {
         setLoading(false);
         enqueueSnackbar('Le département a été effacé avec succès', { variant: 'success' });

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { SnackbarProvider, useSnackbar } from "notistack";
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-
+import { jwtDecode } from "jwt-decode";
 
 const RefundRequest = () => {
 
@@ -11,7 +11,22 @@ const RefundRequest = () => {
         prenom: '',
         file: null,
     });
-    const { id, department, fonction } = useParams();
+    //const { id, department, fonction } = useParams();
+    const token = localStorage.accessToken
+    console.log("hellooo",localStorage.accessToken);
+    try {
+        if(token){
+        const decodedToken = jwtDecode(token)
+        var id = decodedToken?.UserInfo?.id || "" ;
+        var department = decodedToken?.UserInfo?.department || "" ;
+        var fonction = decodedToken?.UserInfo?.fonction || "" ;
+        console.log("mel form mtaa conge",  decodedToken);
+        }
+    } catch (error) {
+        console.error("Error decoding token:", error);
+        //localStorage.clear();
+        console.log("l erreure menna");
+    }
     const { enqueueSnackbar } = useSnackbar();
 
     const handleChange = e => {
@@ -37,7 +52,7 @@ const RefundRequest = () => {
         console.log(formData, "employee",id, "depart",department,"fonction", fonction, "file",formData.file);
 
         try {
-            await axios.post("http://localhost:5000/refund", { nom:formData.nom,prenom:formData.prenom,file:formData.file.name, employee: id, department, type: "Remboursement", fonction});
+            await axios.post("http://localhost:5500/refund", { nom:formData.nom,prenom:formData.prenom,file:formData.file.name, employee: id, department, type: "Remboursement", fonction});
             enqueueSnackbar("Votre demande a été enregistrée", {
                 variant: "success",
             });
@@ -62,13 +77,18 @@ const RefundRequest = () => {
         console.log(formData, "employee",id, "depart",department,"fonction", fonction, "file",formData.file);
     
         try {
-            await axios.post("http://localhost:5000/refund", formDataToSend);
+            await axios.post("http://localhost:5500/refund", formDataToSend);
             enqueueSnackbar("Votre demande a été enregistrée", {
                 variant: "success",
             });
+            //navigate("/employee/demandes");
+            window.location.href = "/employee/demandes";
+
         } catch (error) {
-            enqueueSnackbar(error.response.data.message, { variant: "error" });
-            console.error(error);
+            enqueueSnackbar(error.message, { variant: "error" });
+            console.log(error);
+            //navigate("/employee/demandes");
+
         }
     };
     
@@ -76,7 +96,7 @@ const RefundRequest = () => {
     return (
         <div className="min-h-screen bg-white flex flex-col justify-center items-center">
             <div className="max-w-md mx-auto mt-8 p-6 bg-gray-100 rounded shadow-md">
-                <h2 className="text-2xl font-semibold mb-4">Avance Request Form</h2>
+                <h2 className="text-2xl font-semibold mb-4">Demande de remboursement</h2>
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
                         <label className="block mb-2">

@@ -21,12 +21,12 @@ const LoginFrom = () => {
       };
   
       // Sending login request to backend
-      const response = await axios.post('http://localhost:5000/employee/auth', data);
+      const response = await axios.post('http://localhost:5500/employee/auth', data);
       // If login is successful, navigate to the dashboard or any other desired page
       if (response.status === 200) {
         const decodedToken = jwtDecode(response.data.accessToken);
         console.log("hello",decodedToken.UserInfo.role);
-        const role = await axios.get(`http://localhost:5000/role/${decodedToken.UserInfo.role}`);
+        const role = await axios.get(`http://localhost:5500/role/${decodedToken.UserInfo.role}`);
         console.log("role mel login",role.data.nom);
         
         const { accessToken } = response.data;
@@ -90,24 +90,9 @@ const LoginFrom = () => {
             </div>
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input id="remember_me" name="remember_me" type="checkbox" className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" />
-              <label htmlFor="remember_me" className="ml-2 block text-sm text-gray-900">
-                Remember me
-              </label>
-            </div>
-
-            <div className="text-sm">
-              <Link to="#" className="font-medium text-indigo-600 hover:text-indigo-500">
-                Mot de passe oublié ?
-              </Link>
-            </div>
-          </div>
-
           <div>
             <button type="submit" className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-              Sign in
+              Se connecter
             </button>
           </div>
         </form>

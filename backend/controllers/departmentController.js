@@ -12,6 +12,10 @@ export const addDepartment = async (req, res) => {
 
     let departmentData = { nom };
 
+    const dep = await Department.findOne({nom});
+    if (dep)
+    return res.status(404).json({ message: "Department désigné existe deja" });
+
     // Vérification si chefDepartement est fourni et s'il est non vide
     if (chefDepartement && Object.keys(chefDepartement).length !== 0) {
       const existingEmployee = await Employee.findById(chefDepartement);

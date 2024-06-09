@@ -21,11 +21,15 @@ export const leaveRequest = async (req, res) => {
     const { type, employee, department, date_creation, date_debut, date_fin, typeConge, remplaçant, date_reprise } =
       req.body;
 
+    console.log("leave body", req.body);
+
     if (!employee || !department || !date_debut || !date_fin || !typeConge || !remplaçant || !date_reprise) {
       return res
         .status(400)
         .json({ message: "Veuillez fournir tous les champs." });
     }
+
+    console.log("employee fel leave", employee);
 
     const findEmployee = await Employee.findOne({
       _id: employee,
@@ -68,7 +72,7 @@ export const leaveRequest = async (req, res) => {
 
     // Vérifier que la date de début est supérieure à aujourd'hui de deux jours
     const twoDaysLater = new Date();
-    twoDaysLater.setDate(twoDaysLater.getDate() + 2);
+    twoDaysLater.setDate(twoDaysLater.getDate() + 1);
 
     if (new Date(date_debut) < twoDaysLater) {
       return res.status(400).json({ message: "La date de début doit être supérieure à aujourd'hui de deux jours." });

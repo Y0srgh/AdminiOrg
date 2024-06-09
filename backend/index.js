@@ -22,6 +22,7 @@ const app = express();
 
 //Middleware for parsing reques body
 app.use(express.json());
+
 app.use(cookieParser())
 
 app.use(express.static('public/refund_files'))
@@ -55,6 +56,7 @@ app.get('/', (req, resp) => {
 })
 
 app.use('/employee', employeeRoutes)
+
 app.use('/department', departmentRoutes)
 app.use('/function', functionRoutes)
 app.use('/role', roleRoutes)

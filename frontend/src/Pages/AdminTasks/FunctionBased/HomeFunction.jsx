@@ -14,7 +14,7 @@ const HomeFunction = () => {
     useEffect(() => {
         setLoading(true);
         axios
-          .get('http://localhost:5000/function')
+          .get('http://localhost:5500/function')
           .then((response) => {
             console.log("reponse : ",response.data);
             setFunctions(response.data);
@@ -31,7 +31,7 @@ const HomeFunction = () => {
     <div className='p-4'>
       <div className='flex justify-between items-center'>
         <h1 className='text-3xl my-8'>Liste des fonctions</h1>
-        <Link to='/role/ajouter-role'>
+        <Link to='/function/ajouter-function'>
           <MdOutlineAddBox className='text-sky-800 text-4xl' />
         </Link>
       </div>

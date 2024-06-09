@@ -5,7 +5,7 @@ import axios from 'axios';
 
 const fetchRoleDetails = async (id) => {
     try {
-        const roleResponse = await axios.get(`http://localhost:5000/role/${id}`);
+        const roleResponse = await axios.get(`http://localhost:5500/role/${id}`);
         if (!roleResponse.data) { // Adjusted condition to check roleResponse.data
             throw new Error('Failed to fetch role details');
         }
@@ -59,7 +59,7 @@ const useAuth = () => {
     useEffect(() => {
         const fetchRoles = async () => {
             try {
-                const roleResponse = await axios.get("http://localhost:5000/role");
+                const roleResponse = await axios.get("http://localhost:5500/role");
                 if (!roleResponse.data) {
                     throw new Error('Failed to fetch role details');
                 }

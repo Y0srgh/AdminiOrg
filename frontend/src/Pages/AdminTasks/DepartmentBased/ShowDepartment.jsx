@@ -11,7 +11,7 @@ const ShowDepartment = () => {
     useEffect(() => {
         setLoading(true);
         axios
-            .get(`http://localhost:5000/department/${id}`)
+            .get(`http://localhost:5500/department/${id}`)
             .then((response) => {
                 setDepartment(response.data);
                 setLoading(false);

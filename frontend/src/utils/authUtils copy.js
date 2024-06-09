@@ -21,14 +21,14 @@ export const isAccessTokenExpired = () => {
 export const refreshAccessToken = async () => {
     const accessToken = localStorage.getItem('accessToken');
     try {
-        //const response = await fetch('http://localhost:5000/employee/auth/refresh', {
+        //const response = await fetch('http://localhost:5500/employee/auth/refresh', {
         //  method: 'GET',
         /*headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ accessToken }),*/
         //});
 
-        //const response = await axios.get('http://localhost:5000/employee/auth/refresh')
-        axios.get('http://localhost:5000/employee/auth/refresh', {
+        //const response = await axios.get('http://localhost:5500/employee/auth/refresh')
+        axios.get('http://localhost:5500/employee/auth/refresh', {
             withCredentials: true
         }).then((resp) => {
                 console.log(resp);

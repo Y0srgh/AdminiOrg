@@ -20,20 +20,21 @@ const CreateRole = () => {
         }
         setLoading(true);
         await axios
-            .post("http://localhost:5000/role", data)
+            .post("http://localhost:5500/role", data)
             .then(() => {
                 setLoading(false);
 
                 enqueueSnackbar("Un nouveau role a ete ajoute avec succes", {
                     variant: "success",
                 });
-                //navigate("/");
+                navigate("/role");
                 setRoleName("");
             })
             .catch((error) => {
                 setLoading(false);
                 enqueueSnackbar(error.response.data.message, { variant: "error" });
                 console.log(error);
+                navigate("/role");
             });
     }
 

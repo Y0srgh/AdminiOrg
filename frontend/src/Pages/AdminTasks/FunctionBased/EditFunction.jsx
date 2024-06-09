@@ -15,7 +15,7 @@ const EditFunction = () => {
     useEffect(() => {
         setLoading(true);
         axios
-            .get(`http://localhost:5000/function/${id}`)
+            .get(`http://localhost:5500/function/${id}`)
             .then((response) => {
                 console.log(response);
                 setFunctionName(response.data.nom)
@@ -36,16 +36,17 @@ const EditFunction = () => {
         };
         setLoading(true);
         axios
-            .put(`http://localhost:5000/function/${id}`, data)
+            .put(`http://localhost:5500/function/${id}`, data)
             .then((response) => {
                 console.log("response : ", response);
                 setLoading(false);
                 enqueueSnackbar("La fonction a été modifiée avec succès", {
                     variant: "success",
                 });
+                navigate('/function');
             })
             .catch((error) => {
-                navigate("/");
+                navigate('/function');
                 setLoading(false);
                 // alert('An error happened. Please Chack console');
                 enqueueSnackbar(error.response.data.message, { variant: "error" });

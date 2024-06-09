@@ -1,124 +1,226 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { SnackbarProvider, useSnackbar } from "notistack";
-import BackButton from "../../../components/BackButton"
-import Spinner from "../../../components/Spinner";
 import axios from "axios";
+import { SnackbarProvider, useSnackbar } from "notistack";
 
-const EditDepartment = () => {
-    const [department, setDepartment] = useState('');
-    const [employees, setEmployees] = useState([]);
-    const [chefDepartement, setChefDepartement] = useState(''); // Initialize as an empty string
+const EditEmployee = () => {
+  const { id } = useParams();
+  const [prenom, setPrenom] = useState("");
+  const [nom, setNom] = useState("");
+  const [email, setEmail] = useState("");
+  const [mot_de_passe, setMot_de_passe] = useState("");
+  const [dateEmbauche, setDateEmbauche] = useState("");
+  const [roles, setRoles] = useState([]);
+  const [fonctions, setFonctions] = useState([]);
+  const [departements, setDepartements] = useState([]);
+  const [role, setSelectedRole] = useState("");
+  const [fonction, setSelectedFonction] = useState("");
+  const [departement, setSelectedDepartement] = useState("");
+  const [solde_conge, setSolde_conge] = useState(0);
+  const [loading, setLoading] = useState(true);
 
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
-    const { id } = useParams();
-    const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
 
-    useEffect(() => {
-        setLoading(true);
-        const fetchEmployees = async () => {
-            try {
-                const response = await axios.get("http://localhost:5000/employee");
-                console.log("reponse", response);
-                setEmployees(response.data);
-            } catch (error) {
-                console.error("Error fetching employees:", error);
-            }
-        };
-        fetchEmployees();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [roleResponse, fonctionResponse, departementResponse] = await Promise.all([
+          axios.get("http://localhost:5500/role"),
+          axios.get("http://localhost:5500/function"),
+          axios.get("http://localhost:5500/department")
+        ]);
+        setRoles(roleResponse.data);
+        setFonctions(fonctionResponse.data);
+        setDepartements(departementResponse.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
 
-        axios
-            .get(`http://localhost:5000/department/${id}`)
-            .then((response) => {
-                console.log(response);
-                setDepartment(response.data.nom)
-                setLoading(false);
-            }).catch((error) => {
-                setLoading(false);
-                navigate("/department");
-                enqueueSnackbar("an error has occured", { variant: "error" });
-                console.log(error);
-            });
-    }, []);
+    fetchData();
 
-    const handleEditDepartment = (e) => {
-        e.preventDefault();
-        const data = {
-            nom: department,
-            chefDepartement
-        };
-        setLoading(true);
-        axios
-            .put(`http://localhost:5000/department/${id}`, data)
+    axios
+      .get(`http://localhost:5500/employee/${id}`)
+      .then((response) => {
+        setPrenom(response.data.prenom);
+        setNom(response.data.nom);
+        setEmail(response.data.email);
+        setDateEmbauche(new Date(response.data.dateEmbauche).toISOString().split('T')[0]);
+        setSolde_conge(response.data.solde_conge);
+        setSelectedRole(response.data.role);
+        setSelectedFonction(response.data.fonction);
+        setSelectedDepartement(response.data.departement);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        navigate("/department");
+        enqueueSnackbar("An error has occurred", { variant: "error" });
+        console.log(error);
+      });
+  }, [id, navigate, enqueueSnackbar]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const data = {
+      prenom,
+      nom,
+      email,
+      mot_de_passe,
+      role,
+      fonction,
+      dateEmbauche,
+      departement,
+      solde_conge,
+    };
+
+    axios
+            .put(`http://localhost:5500/employee/update-details/${id}`, data)
             .then((response) => {
                 console.log("response : ", response);
                 setLoading(false);
-                enqueueSnackbar("Le département a été modifié avec succès", {
+                enqueueSnackbar("L'employé a été modifié avec succès", {
                     variant: "success",
                 });
-                navigate("/department");
+                navigate("/employee");
             })
             .catch((error) => {
-                navigate("/department");
+                navigate("/employee");
                 setLoading(false);
                 enqueueSnackbar(error.response.data.message, { variant: "error" });
                 console.log(error);
             });
-    };
+  };
 
-    const validateDepartment = (funct) => {
-        // Regular expression for alphabetical function validation
-        const functionRegex = /^[a-zA-ZÀ-ÿ\s]+$/;
-        return functionRegex.test(funct);
-    };
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-    const validateForm = () => {
-        if (!validateDepartment(department) || department.length < 3) {
-            // Handle invalid Department
-            return false;
-        }
-        return true;
-    }
+  return (
+    <div className="flex justify-center items-center min-h-screen overflow-x-auto">
+      <div className="bg-white p-8 rounded-lg">
+        <h1 className="text-2xl font-semibold mb-4">Modifier un employé</h1>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block mb-2">Prénom</label>
+            <input
+              type="text"
+              value={prenom}
+              onChange={(e) => setPrenom(e.target.value)}
+              required
+              className="border border-gray-300 p-2 rounded-lg w-full"
+              placeholder="Le Prénom de l'employé"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block mb-2">Nom</label>
+            <input
+              type="text"
+              value={nom}
+              onChange={(e) => setNom(e.target.value)}
+              required
+              className="border border-gray-300 p-2 rounded-lg w-full"
+              placeholder="Le Nom de l'employé"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block mb-2">Adresse Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="border border-gray-300 p-2 rounded-lg w-full"
+              placeholder="L'adresse email de l'employé"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block mb-2">Solde de congé</label>
+            <input
+              type="number"
+              value={solde_conge}
+              onChange={(e) => setSolde_conge(e.target.value)}
+              required
+              className="border border-gray-300 p-2 rounded-lg w-full"
+              placeholder="Le solde de congé de l'employé"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block mb-2">Mot de passe</label>
+            <input
+              type="password"
+              value={mot_de_passe}
+              onChange={(e) => setMot_de_passe(e.target.value)}
+              className="border border-gray-300 p-2 rounded-lg w-full"
+              placeholder="Le mot de passe de l'employé"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block mb-2">Date d'embauche</label>
+            <input
+              type="date"
+              value={dateEmbauche}
+              onChange={(e) => setDateEmbauche(e.target.value)}
+              required
+              max={new Date().toISOString().split('T')[0]}
+              className="border border-gray-300 p-2 rounded-lg w-full"
+              placeholder="La date d'embauche de l'employé"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block mb-2">Choisir un rôle pour l'employé</label>
+            <select
+              value={role}
+              onChange={(e) => setSelectedRole(e.target.value)}
+              required
+              className="border border-gray-300 p-2 rounded-lg w-full"
+            >
+              <option value="">Choisissez un rôle</option>
+              {roles.map((role) => (
+                <option key={role._id} value={role._id}>{role.nom}</option>
+              ))}
+            </select>
+          </div>
+          <div className="mb-4">
+            <label className="block mb-2">Choisir une fonction pour l'employé</label>
+            <select
+              value={fonction}
+              onChange={(e) => setSelectedFonction(e.target.value)}
+              required
+              className="border border-gray-300 p-2 rounded-lg w-full"
+            >
+              <option value="">Choisissez une fonction</option>
+              {fonctions.map((fonction) => (
+                <option key={fonction._id} value={fonction._id}>{fonction.nom}</option>
+              ))}
+            </select>
+          </div>
+          <div className="mb-4">
+            <label className="block mb-2">Choisir un département pour l'employé</label>
+            <select
+              value={departement}
+              onChange={(e) => setSelectedDepartement(e.target.value)}
+              required
+              className="border border-gray-300 p-2 rounded-lg w-full"
+            >
+              <option value="">Choisissez un département</option>
+              {departements.map((departement) => (
+                <option key={departement._id} value={departement._id}>{departement.nom}</option>
+              ))}
+            </select>
+          </div>
+          <button
+            type="submit"
+            className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors"
+          >
+            Mettre à jour
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
 
-    return (
-        <div className='p-4'>
-            <BackButton />
-            <h1 className='text-3xl my-4'>Modification de département</h1>
-            {loading ? <Spinner /> : ''}
-            <form onSubmit={handleEditDepartment}>
-                <div className='flex flex-col border-2 border-sky-400 rounded-xl w-[600px] p-4 mx-auto'>
-                    <div className='my-4'>
-                        <label className='text-xl mr-4 text-gray-500'>Label de département</label>
-                        <input
-                            type='text'
-                            value={department}
-                            onChange={(e) => setDepartment(e.target.value)}
-                            className='border-2 border-gray-500 px-4 py-2 w-full'
-                        />
-                    </div>
-                    {(employees.length > 0) && (
-                        <div className='my-4'>
-                            <label className='text-xl mr-4 text-gray-500'>Chef de département</label>
-                            <select
-                                value={chefDepartement}
-                                onChange={(e) => setChefDepartement(e.target.value)}
-                                className='border-2 border-gray-500 px-4 py-2 w-full'
-                            >
-                                <option value="">Sélectionnez un chef de département</option>
-                                {employees.map(employee => (
-                                    <option key={employee.id} value={employee.id}>{employee.name}</option>
-                                ))}
-                            </select>
-                        </div>
-                    )}
-                    <button type="submit" className='p-2 bg-sky-300 m-8' disabled={!validateForm()}>
-                        Enregistrer
-                    </button>
-                </div>
-            </form>
-        </div>
-    )
-}
-
-export default EditDepartment;
+export default EditEmployee;

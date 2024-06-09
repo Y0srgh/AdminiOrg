@@ -9,7 +9,7 @@ const UpdatePassword = () => {
         ancien_mot_de_passe: '',
         mot_de_passe: '',
     })
-    
+
     const handleChange = e => {
         const { name, value } = e.target;
         console.log(name, value);
@@ -18,31 +18,31 @@ const UpdatePassword = () => {
             [name]: value
         });
     };
-    
+
     //const { id } = useParams();
     const token = localStorage.getItem("accessToken")
     const decodedToken = jwtDecode(token);
-    const id = decodedToken.UserInfo.id ;
+    const id = decodedToken.UserInfo.id;
     const { enqueueSnackbar } = useSnackbar();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
-    e.preventDefault();
+        e.preventDefault();
 
-    try {
-        await axios.put(`http://localhost:5000/employee/update-password/${id}`, formData);
-        enqueueSnackbar("Le mot de passe a été modifié avec succès", {
-            variant: "success",
-        });
-        navigate();
-    } catch (error) {
-        enqueueSnackbar(error.response.data.message, { variant: "error" });
-        console.error("log error",error);
-        console.log("log error resp",error.response); // Check the entire error response object
-        console.log(error.response.data.message); // Check the data within the error response
-        navigate();
-    }
-};
+        try {
+            await axios.put(`http://localhost:5500/employee/update-password/${id}`, formData);
+            enqueueSnackbar("Le mot de passe a été modifié avec succès", {
+                variant: "success",
+            });
+            navigate("/employee/demandes");
+        } catch (error) {
+            enqueueSnackbar(error.response.data.message, { variant: "error" });
+            console.error("log error", error);
+            console.log("log error resp", error.response); // Check the entire error response object
+            console.log(error.response.data.message); // Check the data within the error response
+            //navigate("/employee/demandes");
+        }
+    };
 
 
     return (

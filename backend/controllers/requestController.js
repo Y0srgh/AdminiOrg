@@ -54,15 +54,15 @@ export const updateRequest = async (req, res) => {
       return res.status(404).json({message : "cette demande n'existe pas"})
     }
 
-    if(previous === "hr"){
+    if(previous === "admin"){
       request.status = etat ;
       request.validationRH = true
     }else {
-      if((previous === "chef")&&(etat === "Refusée")){
+      if((previous === "depChief")&&(etat === "Refusée")){
         request.validationChef = true ;
         request.status = etat ;
       }else {
-      if(previous === "employee"){
+      if(previous === "employé"){
         request.status = etat ;
 
       }

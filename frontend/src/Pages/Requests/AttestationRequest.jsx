@@ -2,9 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { SnackbarProvider, useSnackbar } from "notistack";
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { jwtDecode } from "jwt-decode";
 
 const AttestationRequest = () => {
-    const { id, department } = useParams();
+    //const { id, department } = useParams();
+    const token = localStorage.accessToken
+    console.log("hellooo",localStorage.accessToken);
+    try {
+        if(token){
+        const decodedToken = jwtDecode(token)
+        var id = decodedToken?.UserInfo?.id || "" ;
+        var department = decodedToken?.UserInfo?.department || "" ;
+        console.log("mel form mtaa conge",  decodedToken);
+        }
+    } catch (error) {
+        console.error("Error decoding token:", error);
+        //localStorage.clear();
+        console.log("l erreure menna");
+    }
 
     const { enqueueSnackbar } = useSnackbar();
 
@@ -16,16 +31,20 @@ const AttestationRequest = () => {
             type: "Attestation",
         };
 
+
         console.log("employee",id, "depart",department);
 
         try {
-            await axios.post("http://localhost:5000/attestation", requestData);
+            await axios.post("http://localhost:5500/attestation", requestData);
             enqueueSnackbar("Votre demande a été enregistrée", {
                 variant: "success",
             });
+            window.location.href = "/employee/demandes";
         } catch (error) {
             enqueueSnackbar(error.response.data.message, { variant: "error" });
             console.error(error);
+            //navigate("/employee/demandes");
+
         }
     };
 

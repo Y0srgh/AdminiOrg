@@ -14,7 +14,7 @@ const DisplayInvalidRequests = () => {
         setLoading(true);
         //localStorage.setItem("userRole","depChief")
         axios
-            .get(`http://localhost:5000/requests`)
+            .get(`http://localhost:5500/requests`)
             .then((response) => {
               const filtered = response.data.data.filter(request => ((request.type === "Congé")&&(!request.validationChef))||((request.type === "Attestation")&&(!request.validationChef))||((request.type === "Avance")&&(!request.validationChef)));
               //const filteredRequests = response.data.data.filter(request => (request.type === "Remboursement"));
@@ -39,7 +39,7 @@ const DisplayInvalidRequests = () => {
     return (
         <div className='p-4'>
             <div className='flex justify-between items-center'>
-                <h1 className='text-3xl my-8'>Liste des demandes non validées</h1>
+                <h1 className='text-3xl my-8'>Liste des demandes</h1>
                 <div className="flex space-x-4 items-center">
                     <select
                         className="border border-gray-300 rounded-md py-1 px-2"

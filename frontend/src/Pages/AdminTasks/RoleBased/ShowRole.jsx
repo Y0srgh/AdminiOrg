@@ -11,7 +11,7 @@ const ShowRole = () => {
     useEffect(() => {
         setLoading(true);
         axios
-            .get(`http://localhost:5000/role/${id}`)
+            .get(`http://localhost:5500/role/${id}`)
             .then((response) => {
                 setRole(response.data);
                 setLoading(false);
